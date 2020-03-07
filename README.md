@@ -36,9 +36,9 @@ Az adatbázis az adott géphez kötött, ezért nem biztos, hogy a korábban lé
 ## Feladat 1: EF alapinfrastruktúra kialakítása
 
 Az EF, mint ORM eszköz használatához az alábbi összetevőkre van szükség:
-- **O**bjektummodel kódban
-- **R**elációs modell az adatbázisban - ez már kész
-- Leképezés (**M**apping) az előbbi kettő között, szintén kódban megadva
+- **o**bjektummodel kódban
+- **r**elációs modell az adatbázisban - ez már kész
+- leképezés (**m**apping) az előbbi kettő között, szintén kódban megadva
 - maga az Entity Framework, mint komponens
 - Entity Framework kompatibilis adatbázis driver
 - adatbázis kapcsolódási adatok, connection string formátumban
@@ -114,8 +114,17 @@ Ezzel létrehoztunk egy debug kimenetre naplózó infrastruktúrát (pontosabban
 ```csharp
 optionsBuilder //ez maradjon meg változatlanul
   .UseLoggerFactory(Program.DaLogger) //ez a rész ékelődjön be
-    .UseSqlServer(""); //ez a rész is maradjon változatlan
+    .UseSqlServer("connection string"); //ez a rész is maradjon változatlan
 ```
+
+A debug kimenet az Output ablakra van kötve - viszont csak akkor, ha a Visual Studio debugger csatlakoztatva van. Ezért fontos, hogy ha látni akarjuk az EF naplókat, akkor **Debug módban (zöld nyíl, F5 billentyű) futtassuk az alkalmazást**.
+
+Próbáljuk ki, az Output ablak alján meg kell jelennie egy hasonló SQL-nek:
+
+> Microsoft.EntityFrameworkCore.Database.Command: Information: Executed DbCommand (42ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+
+>SELECT [v].[ID], [v].[Email], [v].[Jelszo], [v].[KozpontiTelephely], [v].[Login], [v].[Nev], [v].[Szamlaszam]
+>FROM [Vevo] AS [v]
 
 
 
