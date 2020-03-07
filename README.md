@@ -127,17 +127,17 @@ Próbáljuk ki, az Output ablak alján meg kell jelennie egy hasonló SQL-nek:
 
 ## Feladat 4: CRUD műveletek (közös)
 
-Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részfeladat kódja, kommentezzük ki őket.
+Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részfeladat kódja, kommentezzük ki őket. Minden részfeladatnál ellenőrizzük a kiírt eredményt az adatbázisadatok alapján is (pl. Management Studio-ban) és figyeljük meg a generált SQL-t is.
 
 1. Kérdezze le az összes vevőt, írja ki a nevüket, azonosítójukat és felhasználónevüket! - Ezt már megoldottuk!
 
    <details><summary markdown="span">Megoldás</summary>
 
    ```csharp
-  foreach (Vevo vevo in ctx.Vevo)
-  {
-    Console.WriteLine($"{vevo.Nev} ({vevo.Id}, {vevo.Login})");
-  }
+   foreach (Vevo vevo in ctx.Vevo)
+   {
+     Console.WriteLine($"{vevo.Nev} ({vevo.Id}, {vevo.Login})");
+   }
    ```
    </details>
    
@@ -145,25 +145,30 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
 
    <details><summary markdown="span">Megoldás</summary>
 
-   ```sql
-   select distinct t.nev from Termek t
-   join MegrendelesTetel mt on mt.TermekID=t.ID
+   ```csharp
+   //bármelyik jó a két alábbi lekérdezés közül
+   var termeknevek = ctx.MegrendelesTetel.Select(mt => mt.Termek.Nev).Distinct(); //MegrendelesTetel -> Termek
+   //var termeknevek = ctx.Termek.Where(mt => mt.MegrendelesTetel.Any()).Select(t => t.Nev); //Termek -> MegrendelesTetel
+   foreach (string tn in termeknevek)
+   {
+     Console.WriteLine(tn);
+   }
    ```
+   
+   Használjuk a navigációs property-ket és a `System.Linq` névtérben található LINQ operátorokat. Kiindulhatunk a termék, illetve a megrendeléstétel táblából (`DbSet`-ből) is. Érdemes kipróbálni mind a két változatot - nem ugyanolyan SQL generálódik.
+   
    </details>
    
-   A `join` segítségével kapcsoljuk össze a két táblát. A join, ha külön nem rendelkezünk róla, egy inner join lesz, amiben nem szerepelnek olyan termékek, amiknek nincs párjuk a MegrendelesTetel táblában. Fontos a `distinct` kulcsszó is, amivel kiszűrjük az ismétlődéseket.
 
 1. Hány nem teljesített megrendelésünk van (a státusz alapján)?
 
    <details><summary markdown="span">Megoldás</summary>
 
-   ```sql
-   select count(*)
-   from Megrendeles m join Statusz s on m.StatuszID = s.ID
-   where s.Nev != 'Kiszállítva'
+   ```csharp
+   Console.WriteLine(ctx.Megrendeles.Count(mr => mr.Statusz.Nev != "Kiszállítva"));
    ```
 
-   A `join` mellett az oszlopfüggvény (aggregáció) használatára látunk példát. (A táblák kapcsolására nem csak ez a szintaktika használható.)
+   Ez ujjgyakorlat navigációs propertyt használva.
 
    </details>
    
@@ -171,10 +176,12 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
 
    <details><summary markdown="span">Megoldás</summary>
 
-   ```sql
-   select f.Mod
-   from Megrendeles m right outer join FizetesMod f on m.FizetesModID = f.ID
-   where m.ID is null
+   ```csharp
+   var fmList=ctx.FizetesMod.Where(fm => !fm.Megrendeles.Any()).Select(fm=>fm.Mod);
+   foreach (string fm in fmList)
+   {
+       Console.WriteLine(fm);
+   }
    ```
 
    A megoldás kulcsa az `outer join`, aminek köszönhetően láthatjuk, mely fizetési mód rekordhoz _nem_ tartozik egyetlen megrendelés se.
