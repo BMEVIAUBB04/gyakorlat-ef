@@ -183,69 +183,101 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
        Console.WriteLine(fm);
    }
    ```
-
-   A megoldás kulcsa az `outer join`, aminek köszönhetően láthatjuk, mely fizetési mód rekordhoz _nem_ tartozik egyetlen megrendelés se.
-
    </details>
 
-1. Rögzítsünk be egy új vevőt! Kérdezzük le az újonnan létrejött rekord kulcsát!
+1. Rögzítsünk be egy új vevőt! Írjuk ki az újonnan létrejött rekord kulcsát!
 
    <details><summary markdown="span">Megoldás</summary>
 
-   ```sql
-   insert into Vevo(Nev, Login, Jelszo, Email)
-   values ('Teszt Elek', 't.elek', '********', 't.elek@email.com')
+   ```csharp
+   Vevo ujvevo = new Vevo 
+   { 
+      Nev = "Teszt Elek",
+      Login = "t.elek",
+      Jelszo = "******",
+      Email = "t.elek@email.com"
+   };
+   ctx.Add(ujvevo);
+   ctx.SaveChanges();
+   Console.WriteLine(ujvevo.Id);
 
-   select @@IDENTITY
    ```
 
-   Az `insert` után javasolt kiírni az oszlopneveket az egyértelműség végett, bár nem kötelező. Vegyük észre, hogy az ID oszlopnak nem adunk értéket, mert azt a tábla definíciójakor meghatározva a szerver adja automatikusan. Ezért kell utána lekérdeznünk, hogy tudjuk, milyen ID-t adott.
-
+   Az adatváltozásokat (pl. beszúrások) a kontext gyűjti. Az `Add` sor után a kontext nyilvántartja az új példányunkat új rekordként, de még nem csinál az adatbázison semmit. A `SaveChanges` a felgyűlt módosításokat egy füst alatt érvényesíti az adatbázison és vissza is frissíti az érintett C# oldali objektumokat - így a `SaveChanges` után az új vevő azonosítója ki lesz töltve. Debuggerrel láthatjuk is, ahogy a `SaveChanges` soron átjutva kitöltődik az azonosító. Ellenőrizzük a változást az adatbázisban.
+   
+   A megoldás után ezt a részt kommentezzük ki, ne szúrjunk be minden kipróbálásnál új sort.
    </details>
 
 1. A kategóriák között hibásan szerepel az _Fajáték_ kategória név. Javítsuk át a kategória nevét *Fakockák*ra!
 
    <details><summary markdown="span">Megoldás</summary>
 
-   ```sql
-   update Kategoria
-   set Nev = 'Fakockák'
-   where Nev = 'Fajáték'
+   ```csharp
+   var fakocka = ctx.Kategoria.Single(k => k.Nev == "Fajáték");
+   fakocka.Nev = "Fakocka";
+   ctx.SaveChanges();
    ```
-
+   Első lépésként le kell kérdeznünk a módosítandó entitást, elvégezni a módosítást, amit a kontext megintcsak nyilvántart, végül érvényesíteni a módosításokat. A Watch ablakban figyeljük meg a kontext által nyilvántartott állapot változását a `ctx.Entry(fakocka).State` kifejezés figyelésével. Ellenőrizzük a változást az adatbázisban.
+   
+    A megoldás után ezt a részt kommentezzük ki, ha nincs az adatbázisban fajáték, a `Single` kivételt fog dobni, mivel pontosan egy darab rekordot vár.
+    
+    Sajnos ez a művelet így két SQL parancs (egy `SELECT` és egy `UPDATE`), jelenleg az EF Core nem tudja ezt egy utasításként megoldani, bár vannak hozzá [kiterjesztések](https://entityframework-extensions.net/update-from-query) erre a célra.
    </details>
 
-1. Melyik termék kategóriában van a legtöbb termék?
+1. Mely kategóriákban van a legtöbb termék? Írjuk ki ezen kategóriák nevét.
 
    <details><summary markdown="span">Megoldás</summary>
 
-   ```sql
-   select top 1 Nev, (select count(*) from Termek where Termek.KategoriaID = k.ID) as db
-   from Kategoria k
-   order by db desc
+   ```csharp
+   //naív megoldás, csak egy eredmény
+   Console.WriteLine(ctx.Kategoria.OrderByDescending(k => k.Termek.Count()).Select(k=>k.Nev).First());
+   
+   //navigációs propertyvel - kivételt dob!   
+   var maxkat=ctx.Kategoria
+   	.Where(k => k.Termek.Count == ctx.Kategoria.Max(kk=>kk.Termek.Count))
+	.Select(k=>k.Nev);
+   
+   
+   //navigációs propertyvel - működik, de két lekérdezés
+   var maxkat = ctx.Kategoria.Select(kk => kk.Termek.Count)
+    .AsEnumerable() // ez elsüti a lekérdezést, minden kategória termékszámét lekérdezzük
+    .Max();
+   var ktg = ctx.Kategoria.Where(k => k.Termek.Count == maxkat).Select(k=>k.Nev);
+   foreach (var k in ktg)
+   {
+      Console.WriteLine(k);
+   }
+
+   //navigációs property + group by - egy lekérdezés és még működik is!
+   var maxkat = ctx.Kategoria.Where
+   (
+        g => g.Termek.Count == ctx.Termek
+                                .GroupBy(k => k.KategoriaId)
+                                .Max(g => g.Count())
+   ).Select(k=>k.Nev);
+   foreach (var k in maxkat)
+   {
+     Console.WriteLine(k);
+   }
+      
    ```
 
-   A kérdésre több alternatív lekérdezés is eszünkbe juthat. Ez csak egyike a lehetséges megoldásoknak. Itt láthatunk példát az allekérdezésre (subquery) is. Viszont nem ad helyes megoldást akkor, ha több olyan kategória is van, amely ugyanannyi, maximális számú terméket tartalmaz, mert csak az elsőt ilyen kategóriát adja vissza A teljesen helyes megoldás ehelyett:
-
-   ```sql
-   select k.Nev 
-   from Kategoria k
-     join Termek t on t.KategoriaID = k.ID
-   group by k.id, k.Nev
-   having count(t.id) = 
-     (select max(darab) from
-       (
-	    select count(t.id) AS darab
-        from Kategoria k join Termek t on t.KategoriaID = k.ID
-		group by k.id, k.Nev
-	  ) AS darabszamok
-    )
-    ```
-
-   
+   Sajnos elég nehéz olyan lekérdezést összerakni C#-ban, ami az SQL összerakásánál ne dobna kivételt vagy ne több lekérdezésből állna :(. Nem minden logikailag helyes, forduló LINQ kód alakítható SQL-lé, ráadásul ez csak futási időben derül ki. Érdemes ilyenkor megírni a sima SQL-t és ahhoz hasonlóan összerakni a C# kódot, plusz minden lekérdezést legalább egyszer **erősen** ajánlott kipróbálni futás közben is.
 
    </details>
 
+## Feladat 4: SQL parancsok (önálló)
+
+1. Mely termékek ÁFA kulcsa 15%-os?
+1. Az egyes telephelyekre hány rendelés volt eddig?
+1. Melyik városba kérték a legtöbb rendelést?
+1. Melyek azok a vevők, akik legalább 2-szer rendeltek már?
+1. Mely számláknál nem egyezik meg a kiállítás és teljesítés dátuma?
+1. Írjuk ki a 2008 februári rendeléseket!
+1. Írjuk ki azokat a rendeléseket, amelyeknél a határidő 5 napnál szűkebb a rendelés dátumához képest!
+1. Hány vevőnek van gmail-es e-mail címe?
+1. Melyik vevőknek van egynél több telephelye?
+1. Mely vevő(k) adták le a legtöbb tételből álló rendelést? (Több ilyen is lehet!)
 
 ---
 
