@@ -74,6 +74,51 @@ A generált kódban figyeljük meg az alábbiakat:
 
 Mindezzel minden összetevőt létrehoztunk az EF alapinfrastruktúrához.
 
+## Feladat 2: Hello EF!
+
+Írjuk meg az első EF Core lekérdezésünket. Az SQL mérés alapján itt is kérdezzük le az összes vevőt, majd írjuk ki azonosítójukat, nevüket és felhasználói nevüket is.
+
+A `Main` függvénybe:
+
+```csharp
+using (ACMEShop ctx = new ACMEShop()) // kontext létrehozása. Using blokk, mert használat után illik az adatbáziskapcsolatot lezárni.
+{
+    foreach (Vevo vevo in ctx.Vevo) //a ctx.Vevo a lekérdezésünk, a Vevo táblát reprezentálja
+    {
+        Console.WriteLine($"{vevo.Nev} ({vevo.Id}, {vevo.Login})");
+    }
+}
+```
+
+Próbáljuk ki, örvendezzünk, hogy milyen egyszerű és elegáns a kód. Semmilyen SQL stringet/ SQL kódot nem kellett írnunk.
+
+## Feladat 3: Nyomkövetés (trace)
+
+Minden olyan ORM használatakor, ahol az ORM állítja elő az SQL-t, elementárisan fontos, hogy lássuk, milyen SQL fut le az adatbázisszerveren. Nyomkövetni lehet az adatbázis oldalán (adatbázis eszközzel), illetve a programunk oldalán (nyomkövető komponenssel) is. Előbbire példa SQL Server esetén az SQL Server Profiler [Trace eszköze](https://docs.microsoft.com/en-us/sql/tools/sql-server-profiler/create-a-trace-sql-server-profiler). Mi most az utóbbit alkalmazzuk. Adjunk hozzá a projektünkhöz egy általános naplózó komponenst, ami a _Debug_ kimenetre naplóz.
+
+A PMC segítségével telepítsük a naplózó komponenst:
+
+```powershell
+Install-Package Microsoft.Extensions.Logging.Debug
+```
+
+A `Program` osztályba, függvényen kívül:
+
+```csharp
+ public static readonly ILoggerFactory DaLogger
+            = LoggerFactory.Create(builder => { builder.AddDebug(); });
+```
+
+Ezzel létrehoztunk egy debug kimenetre naplózó infrastruktúrát (pontosabban ennek gyártóját), ezt adjuk meg az EF kotextusnak, mely beépítetten naplóz (ha van hova). A kontext `OnConfiguring` függvényébe:
+
+```csharp
+optionsBuilder //ez maradjon meg változatlanul
+  .UseLoggerFactory(Program.DaLogger) //ez a rész ékelődjön be
+    .UseSqlServer(""); //ez a rész is maradjon változatlan
+```
+
+
+
 ---
 
 Az itt található oktatási segédanyagok a BMEVIAUBB04 tárgy hallgatóinak készültek. Az anyagok oly módú felhasználása, amely a tárgy oktatásához nem szorosan kapcsolódik, csak a szerző(k) és a forrás megjelölésével történhet.
