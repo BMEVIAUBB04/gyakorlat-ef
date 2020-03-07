@@ -267,18 +267,18 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
 
    </details>
 
-## Feladat 4: SQL parancsok (önálló)
+## Feladat 4: Lekérdezések (önálló)
 
 1. Mely termékek ÁFA kulcsa 15%-os? Írjuk ki ezen termékek nevét!
 1. Az egyes telephelyekre hány rendelés volt eddig? Írjuk ki a telephelyek azonosítóját és a rendelések számát!
-1. Melyik város(ok)ba kérték a legtöbb rendelést? (**Nehéz!** :scream:)
+1. Melyik város(ok)ba kérték a legtöbb rendelést? (**Nehéz!** :scream: TIPP: lásd a közös feladatokból a hasonlót)
 1. Melyek azok a vevők, akik legalább 2-szer rendeltek már? Írjuk ki ezen vevők nevét és hogy hányszor rendeltek!
 1. Mely számláknál nem egyezik meg a kiállítás és teljesítés dátuma? Írjuk ki ezen számlák azonosítóját!
 1. Írjuk ki a 2008. februári rendelések azonosítóját és ezen rendelések dátumát!
 1. Írjuk ki azon rendelések azonosítóját, dátumát és határidejét, amelyeknél a határidő 5 napnál szűkebb a rendelés dátumához képest! (**Nehéz!** :scream:, TIPP: `EF.Functions.DateDiffDay(<dátum>,<határidő>)`)
 1. Hány vevőnek van gmail-es e-mail címe?
 1. Melyik vevőknek van egynél több telephelye? Írjuk ki ezen vevők nevét és telephelyeik számát!
-1. Mely vevő(k) adták le a legtöbb tételből álló rendelést? (Több ilyen is lehet!) Írjuk ki ezen vevők nevét!
+1. Mely vevő(k) adták le a legtöbb tételből álló rendelést? (Több ilyen is lehet!) Írjuk ki ezen vevők nevét! (**Nehéz!** :scream: TIPP: lásd a közös feladatokból a hasonlót)
 
 ---
 
