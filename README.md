@@ -40,8 +40,8 @@ Az EF, mint ORM eszköz használatához az alábbi összetevőkre van szükség:
 - **o**bjektummodel kódban
 - **r**elációs modell az adatbázisban - ez már kész
 - leképezés (**m**apping) az előbbi kettő között, szintén kódban megadva
-- maga az Entity Framework, mint komponens
-- Entity Framework kompatibilis adatbázis driver
+- maga az Entity Framework Core, mint komponens
+- Entity Framework Core kompatibilis adatbázis driver
 - adatbázis kapcsolódási adatok, connection string formátumban
 
 Az objektummodellt és a leképezést generáltatni fogjuk az adatbázis alapján.
