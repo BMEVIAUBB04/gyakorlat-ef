@@ -28,7 +28,7 @@ Felkészülés ellenőrzése:
 
 ## Gyakorlat menete
 
-Az első három feladatot a gyakorlatvezetővel együtt oldjuk meg. Az utolsó feladat önálló munka, amennyiben marad rá idő. A közös feladatok megoldásai megtalálhatóak az útmutatóban is. Előbb azonban próbáljuk magunk megoldani a feladatot!
+Az utolsó feladatot leszámítva a feladatokat a gyakorlatvezetővel együtt oldjuk meg. Az utolsó feladat önálló munka, amennyiben marad rá idő. A közös feladatok megoldásai megtalálhatóak az útmutatóban is. Előbb azonban próbáljuk magunk megoldani a feladatot!
 
 ## Feladat 0: Adatbázis létrehozása, ellenőrzése
 
