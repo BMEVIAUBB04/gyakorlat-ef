@@ -128,7 +128,7 @@ Próbáljuk ki, az Output ablak alján meg kell jelennie egy hasonló SQL-nek:
 
 ## Feladat 4: CRUD műveletek (közös)
 
-Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részfeladat kódja, kommentezzük ki őket. Minden részfeladatnál ellenőrizzük a kiírt eredményt az adatbázisadatok alapján is (pl. Management Studio-ban) és figyeljük meg a generált SQL-t is.
+Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részfeladat kódja, kommentezzük ki őket. Minden részfeladatnál ellenőrizzük a kiírt eredményt az adatbázisadatok alapján is (pl. Management Studio-ban) és figyeljük meg a generált SQL-t is az Output ablak alján.
 
 1. Kérdezze le az összes vevőt, írja ki a nevüket, azonosítójukat és felhasználónevüket! - Ezt már megoldottuk!
 
