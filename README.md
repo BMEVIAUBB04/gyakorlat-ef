@@ -2,7 +2,7 @@
 
 ## Célkitűzés
 
-ORM alapú adatbáziskezelés alapjainak elsajátítása CRUD műveletek írásán keresztül. LINQ-to-Entities lekérdezések írásának gyakorlása.
+ORM alapú adatbáziskezelés alapjainak elsajátítása [CRUD műveletek](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) írásán keresztül. LINQ-to-Entities lekérdezések írásának gyakorlása.
 
 ## Előfeltételek
 
