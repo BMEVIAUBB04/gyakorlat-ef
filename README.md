@@ -94,7 +94,7 @@ Próbáljuk ki, örvendezzünk, hogy milyen egyszerű és elegáns a kód. Semmi
 
 ## Feladat 3: Nyomkövetés (trace)
 
-Minden olyan ORM használatakor, ahol az ORM állítja elő az SQL-t, elementárisan fontos, hogy lássuk, milyen SQL fut le az adatbázisszerveren. Nyomkövetni lehet az adatbázis oldalán (adatbázis eszközzel), illetve a programunk oldalán (nyomkövető komponenssel) is. Előbbire példa SQL Server esetén az SQL Server Profiler [Trace eszköze](https://docs.microsoft.com/en-us/sql/tools/sql-server-profiler/create-a-trace-sql-server-profiler). Mi most az utóbbit alkalmazzuk. Adjunk hozzá a projektünkhöz egy általános naplózó komponenst, ami a _Debug_ kimenetre naplóz.
+Minden olyan ORM használatakor, ahol az ORM állítja elő az SQL-t, elementárisan fontos, hogy lássuk, milyen SQL fut le az adatbázisszerveren. Nyomkövetni lehet az adatbázis oldalán (adatbázis eszközzel), illetve a programunk oldalán (nyomkövető komponenssel) is. Előbbire példa SQL Server esetén az SQL Server Profiler [Trace eszköze](https://docs.microsoft.com/en-us/sql/tools/sql-server-profiler/create-a-trace-sql-server-profiler). Mi most az utóbbi irányt követjük. Adjunk hozzá a projektünkhöz egy általános naplózó komponenst, ami a _Debug_ kimenetre naplóz.
 
 A PMC segítségével telepítsük a naplózó komponenst:
 
@@ -123,9 +123,121 @@ Próbáljuk ki, az Output ablak alján meg kell jelennie egy hasonló SQL-nek:
 
 > Microsoft.EntityFrameworkCore.Database.Command: Information: Executed DbCommand (42ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
 
->SELECT [v].[ID], [v].[Email], [v].[Jelszo], [v].[KozpontiTelephely], [v].[Login], [v].[Nev], [v].[Szamlaszam]
->FROM [Vevo] AS [v]
+>SELECT [v].[ID], [v].[Email], [v].[Jelszo], [v].[KozpontiTelephely], [v].[Login], [v].[Nev], [v].[Szamlaszam] FROM [Vevo] AS [v]
 
+## Feladat 4: CRUD műveletek (közös)
+
+Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részfeladat kódja, kommentezzük ki őket.
+
+1. Kérdezze le az összes vevőt, írja ki a nevüket, azonosítójukat és felhasználónevüket! - Ezt már megoldottuk!
+
+   <details><summary markdown="span">Megoldás</summary>
+
+   ```csharp
+  foreach (Vevo vevo in ctx.Vevo)
+  {
+    Console.WriteLine($"{vevo.Nev} ({vevo.Id}, {vevo.Login})");
+  }
+   ```
+   </details>
+   
+1. Listázza ki, hogy eddig milyen nevű termékeket rendeltek!
+
+   <details><summary markdown="span">Megoldás</summary>
+
+   ```sql
+   select distinct t.nev from Termek t
+   join MegrendelesTetel mt on mt.TermekID=t.ID
+   ```
+   </details>
+   
+   A `join` segítségével kapcsoljuk össze a két táblát. A join, ha külön nem rendelkezünk róla, egy inner join lesz, amiben nem szerepelnek olyan termékek, amiknek nincs párjuk a MegrendelesTetel táblában. Fontos a `distinct` kulcsszó is, amivel kiszűrjük az ismétlődéseket.
+
+1. Hány nem teljesített megrendelésünk van (a státusz alapján)?
+
+   <details><summary markdown="span">Megoldás</summary>
+
+   ```sql
+   select count(*)
+   from Megrendeles m join Statusz s on m.StatuszID = s.ID
+   where s.Nev != 'Kiszállítva'
+   ```
+
+   A `join` mellett az oszlopfüggvény (aggregáció) használatára látunk példát. (A táblák kapcsolására nem csak ez a szintaktika használható.)
+
+   </details>
+   
+1. Melyek azok a fizetési módok, amit soha nem választottak a megrendelőink?
+
+   <details><summary markdown="span">Megoldás</summary>
+
+   ```sql
+   select f.Mod
+   from Megrendeles m right outer join FizetesMod f on m.FizetesModID = f.ID
+   where m.ID is null
+   ```
+
+   A megoldás kulcsa az `outer join`, aminek köszönhetően láthatjuk, mely fizetési mód rekordhoz _nem_ tartozik egyetlen megrendelés se.
+
+   </details>
+
+1. Rögzítsünk be egy új vevőt! Kérdezzük le az újonnan létrejött rekord kulcsát!
+
+   <details><summary markdown="span">Megoldás</summary>
+
+   ```sql
+   insert into Vevo(Nev, Login, Jelszo, Email)
+   values ('Teszt Elek', 't.elek', '********', 't.elek@email.com')
+
+   select @@IDENTITY
+   ```
+
+   Az `insert` után javasolt kiírni az oszlopneveket az egyértelműség végett, bár nem kötelező. Vegyük észre, hogy az ID oszlopnak nem adunk értéket, mert azt a tábla definíciójakor meghatározva a szerver adja automatikusan. Ezért kell utána lekérdeznünk, hogy tudjuk, milyen ID-t adott.
+
+   </details>
+
+1. A kategóriák között hibásan szerepel az _Fajáték_ kategória név. Javítsuk át a kategória nevét *Fakockák*ra!
+
+   <details><summary markdown="span">Megoldás</summary>
+
+   ```sql
+   update Kategoria
+   set Nev = 'Fakockák'
+   where Nev = 'Fajáték'
+   ```
+
+   </details>
+
+1. Melyik termék kategóriában van a legtöbb termék?
+
+   <details><summary markdown="span">Megoldás</summary>
+
+   ```sql
+   select top 1 Nev, (select count(*) from Termek where Termek.KategoriaID = k.ID) as db
+   from Kategoria k
+   order by db desc
+   ```
+
+   A kérdésre több alternatív lekérdezés is eszünkbe juthat. Ez csak egyike a lehetséges megoldásoknak. Itt láthatunk példát az allekérdezésre (subquery) is. Viszont nem ad helyes megoldást akkor, ha több olyan kategória is van, amely ugyanannyi, maximális számú terméket tartalmaz, mert csak az elsőt ilyen kategóriát adja vissza A teljesen helyes megoldás ehelyett:
+
+   ```sql
+   select k.Nev 
+   from Kategoria k
+     join Termek t on t.KategoriaID = k.ID
+   group by k.id, k.Nev
+   having count(t.id) = 
+     (select max(darab) from
+       (
+	    select count(t.id) AS darab
+        from Kategoria k join Termek t on t.KategoriaID = k.ID
+		group by k.id, k.Nev
+	  ) AS darabszamok
+    )
+    ```
+
+   
+
+   </details>
 
 
 ---
