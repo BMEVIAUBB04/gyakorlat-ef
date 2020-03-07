@@ -16,6 +16,7 @@ A labor elvégzéséhez szükséges eszközök:
 Amit érdemes átnézned:
 
 - EF Core előadás anyaga
+- SQL nyelv
 - Microsoft SQL Server használata [segédlet](https://BMEVIAUBB04.github.io/gyakorlat-mssql/mssql-hasznalat.html) és [videó](https://youtu.be/gmY8reqSL7U)
 - A használt adatbázis [sémája](https://BMEVIAUBB04.github.io/gyakorlat-mssql/sema.html)
 
@@ -262,22 +263,22 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
       
    ```
 
-   Sajnos elég nehéz olyan lekérdezést összerakni C#-ban, ami az SQL összerakásánál ne dobna kivételt vagy ne több lekérdezésből állna :(. Nem minden logikailag helyes, forduló LINQ kód alakítható SQL-lé, ráadásul ez csak futási időben derül ki. Érdemes ilyenkor megírni a sima SQL-t és ahhoz hasonlóan összerakni a C# kódot, plusz minden lekérdezést legalább egyszer **erősen** ajánlott kipróbálni futás közben is.
+   Sajnos elég nehéz olyan lekérdezést összerakni C#-ban, ami az SQL összerakásánál ne dobna kivételt vagy ne több lekérdezésből állna :cold_sweat:. Nem minden logikailag helyes, forduló LINQ kód alakítható SQL-lé, ráadásul ez csak futási időben derül ki. Érdemes ilyenkor megírni a sima SQL-t és ahhoz hasonlóan összerakni a C# kódot, plusz minden lekérdezést legalább egyszer **erősen** ajánlott kipróbálni futás közben is.
 
    </details>
 
 ## Feladat 4: SQL parancsok (önálló)
 
-1. Mely termékek ÁFA kulcsa 15%-os?
-1. Az egyes telephelyekre hány rendelés volt eddig?
+1. Mely termékek ÁFA kulcsa 15%-os? Írjuk ki ezen termékek nevét!
+1. Az egyes telephelyekre hány rendelés volt eddig? Írjuk ki a telephelyek azonosítóját és a rendelések számát!
 1. Melyik városba kérték a legtöbb rendelést?
-1. Melyek azok a vevők, akik legalább 2-szer rendeltek már?
-1. Mely számláknál nem egyezik meg a kiállítás és teljesítés dátuma?
-1. Írjuk ki a 2008 februári rendeléseket!
-1. Írjuk ki azokat a rendeléseket, amelyeknél a határidő 5 napnál szűkebb a rendelés dátumához képest!
+1. Melyek azok a vevők, akik legalább 2-szer rendeltek már? Írjuk ki ezen vevők nevét és hogy hányszor rendeltek!
+1. Mely számláknál nem egyezik meg a kiállítás és teljesítés dátuma? Írjuk ki ezen számlák azonosítóját!
+1. Írjuk ki a 2008. februári rendelések azonosítóit és ezen rendelések dátumát!
+1. Írjuk ki azon rendelések azonosítóját dátumát és határidejét, amelyeknél a határidő 5 napnál szűkebb a rendelés dátumához képest!
 1. Hány vevőnek van gmail-es e-mail címe?
-1. Melyik vevőknek van egynél több telephelye?
-1. Mely vevő(k) adták le a legtöbb tételből álló rendelést? (Több ilyen is lehet!)
+1. Melyik vevőknek van egynél több telephelye? Írjuk ki ezen vevők nevét és telephelyeik számát!
+1. Mely vevő(k) adták le a legtöbb tételből álló rendelést? (Több ilyen is lehet!) Írjuk ki ezen vevők nevét!
 
 ---
 
