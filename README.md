@@ -2,13 +2,14 @@
 
 ## Célkitűzés
 
-EF Core programozás alapjainak elsajátítása CRUD műveletek írásán keresztül. LINQ-to-Entities lekérdezések írásának gyakorlása.
+ORM alapú adatbáziskezelés alapjainak elsajátítása CRUD műveletek írásán keresztül. LINQ-to-Entities lekérdezések írásának gyakorlása.
 
 ## Előfeltételek
 
 A labor elvégzéséhez szükséges eszközök:
 
 - Microsoft SQL Server (LocalDB vagy Express edition)
+- SQL Server Management Studio
 - Visual Studio 2019 .NET Core 3.1 SDK-val telepítve
 - Adatbázis létrehozó script: [mssql.sql](https://raw.githubusercontent.com/BMEVIAUBB04/gyakorlat-mssql/master/mssql.sql)
 
@@ -32,12 +33,46 @@ Az első három feladatot a gyakorlatvezetővel együtt oldjuk meg. Az utolsó f
 
 Az adatbázis az adott géphez kötött, ezért nem biztos, hogy a korábban létrehozott adatbázis most is létezik. Ezért először ellenőrizzük, és ha nem találjuk, akkor hozzuk létre újra az adatbázist. (Ennek mikéntjét lásd a ["Tranzakciókezelés" gyakorlat anyagában](https://bmeviaubb04.github.io/gyakorlat-tranzakciok/).)
 
-## Feladat 1: EF alap infrastruktúra kialakítása
+## Feladat 1: EF alapinfrastruktúra kialakítása
 
-Az EF, mint ORM eszköz használatához az alábbi összetevőre van szükség:
+Az EF, mint ORM eszköz használatához az alábbi összetevőkre van szükség:
 - **O**bjektummodel kódban
-- **R**elációs modell az adatbázisban - ez kész
-- Leképezés (**M**apping) az előbbi kettő között
+- **R**elációs modell az adatbázisban - ez már kész
+- Leképezés (**M**apping) az előbbi kettő között, szintén kódban megadva
+- maga az Entity Framework, mint komponens
+- Entity Framework kompatibilis adatbázis driver
+- adatbázis kapcsolódási adatok, connection string formátumban
+
+Az objektummodellt és a leképezést generáltatni fogjuk az adatbázis alapján.
+1. Hozzunk létre Visual Studio-ban egy .NET Core alapú C# nyelvű konzolalkalmazást. Próbáljuk ki, hogy működik-e, kiíródik-e a "Hello World".
+2. Nyissuk meg a Package Manager Console-t (PMC) a Tools -> NuGet Package Manager -> Package Manager Console menüponttal
+3. Telepítsük fel az EF kódgenerátor eszközt projektfüggőségként, illetve az SQL Server adatbázis drivert. A generátor eszköznek már kapcsolódnia kell az adatbázishoz, amihez szüksége van a driverre. PMC-ben hajtsuk végre:
+
+```powershell
+Install-Package Microsoft.EntityFrameworkCore.Tools
+Install-Package Microsoft.EntityFrameworkCore.SqlServer
+```
+Ezek a csomagok függőségként magát az Entity Framework Core-t is telepítik.
+
+4. Generáltassuk az adatbázismodellt az alábbi paranccsal. Paraméterei: kapcsolódási adatok (Connection), adatbázis driver neve (Provider), a projekten belül a generálandó fájlok könyvtára (OutputDir), a generálandó adatbáziskontextus neve (Context). Bővebben [itt](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/powershell#scaffold-dbcontext). A connection string-ben ne felejtsük el átírni az értékeket, pl. a neptun kódot kitölteni.
+A connection string szerkezete SQL Server esetén: kulcs=érték párok pontosvesszővel elválasztva. Nekünk most az alábbi adatok kellenek:
+  - Server - a szerver neve
+  - Database - adatbázis neve a szerveren belül (ez ennél a gyakorlatnál a neptun kód lesz)
+  - Trusted_Connection=True - ez a Windows authentikációt takarja.
+A connection string szerkezete gyártónként eltér és elég sok paramétere lehet. Bővebben [itt](https://www.connectionstrings.com/)
+
+```powershell
+Scaffold-DbContext -Connection "Server=(localdb)\mssqllocaldb;Database=<neptun>;Trusted_Connection=True;" -Provider Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Context ACMEShop
+```
+
+A generált kódban figyeljük meg az alábbiakat:
+  - az egyes táblabeli soroknak (rekordoknak) megfelelő C# osztályokat (pl. Termek.cs), azon belül az oszlopoknak megfelelő egyszerű property-ket és a kapcsolódó tábláknak megfelelő más osztályok típusával rendelkező navigációs property-ket (pl. `Termek.Afa`). Ezek alkotják az objektummodellt.
+  - a kontextusosztályt (pl. ACMEShop.cs), ami az általunk megadott névvel jött létre és magának az adatbázisnak a leképezése. Tartalmazza:
+    - a tábláknak megfelelő `DbSet<RekordTipus>` property-ket, ezek a tábláknak felelenek meg
+    - az adatbázis szintű konfigurációt (`OnConfiguring` függvény), pl. kapcsolódási adatokat, bár azt inkább külön konfig fájlban szoktuk tárolni
+    - a leképezések kódját az `OnModelCreating` függvényben. Minden rekordtípus minden property-jére megadja, hogy melyik tábla melyik oszlopára lépződik. Navigációs property-knél megadja a kapcsolat egyes résztvevőinek számosságát (1-N-es, N-N-es), valamint ha van, akkor az idegen kulcs kényszert is.
+
+Mindezzel minden összetevőt létrehoztunk az EF alapinfrastruktúrához.
 
 ---
 
