@@ -22,7 +22,7 @@ Amit érdemes átnézned:
 
 Felkészülés ellenőrzése:
 
-- A gyakorlatra való felkészüléshez használható [ezen kérdőív]().
+- A gyakorlatra való felkészüléshez használható [ezen kérdőív](https://forms.office.com/Pages/ResponsePage.aspx?id=q0g1anB1cUKRqFjaAGlwKfQJKflZc3NJoMvFrE-iHZ9UNkdMMk82UjFTSlI4TjQ2TElFUlBJVzRCQy4u).
 - A gyakorlaton beugróként ugyanezen kérdőívet fogjuk használni, legalább 50% elérése szükséges.
   - Gyakorlatvezetői instrukció: a hallgató nyissa meg a kérdőívet és töltse ki. A válaszok megadása után az utolsó oldalon a "View results" gombra kattintva megtekinthető az eredmény és az elért pontszám. A hallgató ezen az oldalon álljon meg és mutassa meg eredményét a gyakorlatvezetőnek.
 
@@ -44,7 +44,7 @@ Az EF, mint ORM eszköz használatához az alábbi összetevőkre van szükség:
 - Entity Framework Core kompatibilis adatbázis driver
 - adatbázis kapcsolódási adatok, connection string formátumban
 
-Az objektummodellt és a leképezést generáltatni fogjuk az adatbázis alapján.
+Az objektummodellt és a leképezést generáltatni fogjuk az adatbázis alapján - ez az ún. Reverse Engineering modellezési módszer.
 1. Hozzunk létre Visual Studio-ban egy .NET Core alapú C# nyelvű konzolalkalmazást. Próbáljuk ki, hogy működik-e, kiíródik-e a "Hello World".
 2. Nyissuk meg a Package Manager Console-t (PMC) a Tools -> NuGet Package Manager -> Package Manager Console menüponttal
 3. Telepítsük fel az EF kódgenerátor eszközt projektfüggőségként, illetve az SQL Server adatbázis drivert. A generátor eszköznek már kapcsolódnia kell az adatbázishoz, amihez szüksége van a driverre. PMC-ben hajtsuk végre:
