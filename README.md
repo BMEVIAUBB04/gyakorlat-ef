@@ -242,7 +242,7 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
    
    //navigációs propertyvel - működik, de két lekérdezés
    var maxkat = ctx.Kategoria.Select(kk => kk.Termek.Count)
-    .AsEnumerable() // ez elsüti a lekérdezést, minden kategória termékszámét lekérdezzük
+    .AsEnumerable() // ez elsüti a lekérdezést, minden kategória termékszámát lekérdezzük
     .Max();
    var ktg = ctx.Kategoria.Where(k => k.Termek.Count == maxkat).Select(k=>k.Nev);
    foreach (var k in ktg)
