@@ -93,40 +93,27 @@ using (ACMEShop ctx = new ACMEShop()) // kontext létrehozása. Using blokk, mer
 }
 ```
 
-Próbáljuk ki, örvendezzünk, hogy milyen egyszerű és elegáns a kód. Semmilyen SQL stringet/ SQL kódot nem kellett írnunk.
+Próbáljuk ki, örvendezzünk, hogy milyen egyszerű és elegáns a kód. Semmilyen SQL stringet / SQL kódot nem kellett írnunk.
 
 ## Feladat 3: Nyomkövetés (trace)
 
-Minden olyan ORM használatakor, ahol az ORM állítja elő az SQL-t, elementárisan fontos, hogy lássuk, milyen SQL fut le az adatbázisszerveren. Nyomkövetni lehet az adatbázis oldalán (adatbázis eszközzel), illetve a programunk oldalán (nyomkövető komponenssel) is. Előbbire példa SQL Server esetén az SQL Server Profiler [Trace eszköze](https://docs.microsoft.com/en-us/sql/tools/sql-server-profiler/create-a-trace-sql-server-profiler). Mi most az utóbbi irányt követjük. Adjunk hozzá a projektünkhöz egy általános naplózó komponenst, ami a _Debug_ kimenetre naplóz.
-
-A PMC segítségével telepítsük a naplózó komponenst:
-
-```powershell
-Install-Package Microsoft.Extensions.Logging.Debug
-```
-
-A `Program` osztályba, függvényen kívül:
+Minden olyan ORM használatakor, ahol az ORM állítja elő az SQL-t, elementárisan fontos, hogy lássuk, milyen SQL fut le az adatbázisszerveren. Nyomkövetni lehet az adatbázis oldalán (adatbázis eszközzel), illetve a programunk oldalán (nyomkövető komponenssel) is. Előbbire példa SQL Server esetén az SQL Server Profiler [Trace eszköze](https://docs.microsoft.com/en-us/sql/tools/sql-server-profiler/create-a-trace-sql-server-profiler). Mi most az utóbbi irányt követjük. A kontext `OnConfiguring` függvényébe:
 
 ```csharp
- public static readonly ILoggerFactory DaLogger
-            = LoggerFactory.Create(builder => { builder.AddDebug(); });
-```
-
-Ezzel létrehoztunk egy debug kimenetre naplózó infrastruktúrát (pontosabban ennek gyártóját), ezt adjuk meg az EF kotextusnak, mely beépítetten naplóz (ha van hova). A kontext `OnConfiguring` függvényébe:
-
-```csharp
-optionsBuilder //ez maradjon meg változatlanul
-  .UseLoggerFactory(Program.DaLogger) //ez a rész ékelődjön be
-    .UseSqlServer("connection string"); //ez a rész is maradjon változatlan
+optionsBuilder.UseSqlServer("connection string") //ez a rész maradjon változatlan
+	.LogTo(message => System.Diagnostics.Debug.WriteLine(message),LogLevel.Information); //ez a rész ékelődjön be a ; elé
 ```
 
 A debug kimenet az Output ablakra van kötve - viszont csak akkor, ha a Visual Studio debugger csatlakoztatva van. Ezért fontos, hogy ha látni akarjuk az EF naplókat, akkor **Debug módban (zöld nyíl, F5 billentyű) futtassuk az alkalmazást**.
 
 Próbáljuk ki, az Output ablak alján meg kell jelennie egy hasonló SQL-nek:
 
-> Microsoft.EntityFrameworkCore.Database.Command: Information: Executed DbCommand (42ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+> info: [időbélyeg] RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+>      Executed DbCommand (26ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+>      SELECT [v].[ID], [v].[Email], [v].[Jelszo], [v].[KozpontiTelephely], [v].[Login], [v].[Nev], [v].[Szamlaszam]
+>      FROM [Vevo] AS [v]
 
->SELECT [v].[ID], [v].[Email], [v].[Jelszo], [v].[KozpontiTelephely], [v].[Login], [v].[Nev], [v].[Szamlaszam] FROM [Vevo] AS [v]
+Ha hibakeresés miatt részletesebb naplóra van szükség, akkor a `LogLevel` típusú paramétert (ideiglenesen) állítsuk `Loglevel.Debug`-ra.
 
 ## Feladat 4: CRUD műveletek (közös)
 
