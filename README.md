@@ -60,11 +60,12 @@ Ezek a csomagok függőségként magát az Entity Framework Core-t is telepítik
 A connection string szerkezete SQL Server esetén: kulcs=érték párok pontosvesszővel elválasztva. Nekünk most az alábbi adatok kellenek:
   - Server - a szerver neve
   - Database - adatbázis neve a szerveren belül (ez ennél a gyakorlatnál a neptun kód lesz)
-  - Trusted_Connection=True - ez a Windows authentikációt takarja.
+  - Trusted_Connection=True - ez a Windows authentikációt takarja
+  - NoPluralize - a táblák eléréshez többesszámosított property nevek generálódnának alapból, viszont ez csak angol nyelvű táblaneveknél működne jól, ezért ezt a funkciót kikapcsoljuk
 A connection string szerkezete gyártónként eltér és elég sok paramétere lehet. Bővebben [itt](https://www.connectionstrings.com/).
 
 ```powershell
-Scaffold-DbContext -Connection "Server=(localdb)\mssqllocaldb;Database=<neptun>;Trusted_Connection=True;" -Provider Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Context ACMEShop
+Scaffold-DbContext -Connection "Server=(localdb)\mssqllocaldb;Database=<neptun>;Trusted_Connection=True;" -Provider Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Context ACMEShop -NoPluralize
 ```
 
 A generált kódban figyeljük meg az alábbiakat:
