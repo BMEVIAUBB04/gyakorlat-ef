@@ -165,7 +165,7 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
 
    </details>
    
-1. Melyek azok a fizetési módok, amit soha nem választottak a megrendelőink?
+1. Melyek azok a fizetési módok, amiket soha nem választottak a megrendelőink?
 
    <details><summary markdown="span">Megoldás</summary>
 
@@ -210,7 +210,7 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
    fakocka.Nev = "Fakocka";
    ctx.SaveChanges();
    ```
-   Első lépésként le kell kérdeznünk a módosítandó entitást, elvégezni a módosítást, amit a kontext megintcsak nyilvántart, végül érvényesíteni a módosításokat. A Watch ablakban figyeljük meg a kontext által nyilvántartott állapot változását a `ctx.Entry(fakocka).State` kifejezés figyelésével. Ellenőrizzük a változást az adatbázisban.
+   Első lépésként le kell kérdeznünk a módosítandó entitást, elvégezni a módosítást, amit a kontext megint csak nyilvántart, végül érvényesíteni a módosításokat. A Watch ablakban figyeljük meg a kontext által nyilvántartott állapot változását a `ctx.Entry(fakocka).State` kifejezés figyelésével. Ellenőrizzük a változást az adatbázisban.
    
     A megoldás után ezt a részt kommentezzük ki, ha nincs az adatbázisban fajáték, a `Single` kivételt fog dobni, mivel pontosan egy darab rekordot vár.
     
@@ -229,7 +229,10 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
    var maxkat=ctx.Kategoria
    	.Where(k => k.Termek.Count == ctx.Kategoria.Max(kk=>kk.Termek.Count))
 	.Select(k=>k.Nev);
-   
+   foreach (var k in maxkat)
+   {
+     Console.WriteLine(k);
+   }
    
    //navigációs propertyvel - működik, de két lekérdezés
    var maxkat = ctx.Kategoria.Select(kk => kk.Termek.Count)
