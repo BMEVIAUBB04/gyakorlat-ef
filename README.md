@@ -46,7 +46,7 @@ Az EF, mint ORM eszköz használatához az alábbi összetevőkre van szükség:
 
 Az objektummodellt és a leképezést generáltatni fogjuk az adatbázis alapján - ez az ún. Reverse Engineering modellezési módszer.
 1. Hozzunk létre Visual Studio-ban egy .NET 5 alapú C# nyelvű konzolalkalmazást. Ehhez válasszuk ki a C# nyelvű konzolalkalmazás sablonok közül a simát vagy a .NET Core jelölésűt (de ne a .NET Framework jelölésűt). Futtatókörnyezetként válasszuk a .NET 5-öt. Próbáljuk ki, hogy működik-e, kiíródik-e a "Hello World".
-2. Nyissuk meg a Package Manager Console-t (PMC) a Tools -> NuGet Package Manager -> Package Manager Console menüponttal
+2. Nyissuk meg a Package Manager Console-t (PMC) a Tools :arrow_right: NuGet Package Manager :arrow_right: Package Manager Console menüponttal
 3. Telepítsük fel az EF kódgenerátor eszközt projektfüggőségként, illetve az SQL Server adatbázis drivert. A generátor eszköznek már kapcsolódnia kell az adatbázishoz, amihez szüksége van a driverre. PMC-ben hajtsuk végre:
 
 ```powershell
