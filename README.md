@@ -110,11 +110,11 @@ Próbáljuk ki, az Output ablak alján meg kell jelennie egy hasonló SQL-nek:
 
 > info: [időbélyeg] RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
 > 
->      Executed DbCommand (26ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+> &nbsp;&nbsp;&nbsp;&nbsp;Executed DbCommand (26ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
 >      
->      SELECT [v].[ID], [v].[Email], [v].[Jelszo], [v].[KozpontiTelephely], [v].[Login], [v].[Nev], [v].[Szamlaszam]
+> &nbsp;&nbsp;&nbsp;&nbsp;SELECT [v].[ID], [v].[Email], [v].[Jelszo], [v].[KozpontiTelephely], [v].[Login], [v].[Nev], [v].[Szamlaszam]
 >      
->      FROM [Vevo] AS [v]
+> &nbsp;&nbsp;&nbsp;&nbsp;FROM [Vevo] AS [v]
 
 Ha hibakeresés miatt részletesebb naplóra van szükség, akkor a `LogLevel` típusú paramétert (ideiglenesen) állítsuk `Loglevel.Debug`-ra.
 
