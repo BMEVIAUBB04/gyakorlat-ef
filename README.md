@@ -10,7 +10,7 @@ A labor elvégzéséhez szükséges eszközök:
 
 - Microsoft SQL Server (LocalDB vagy Express edition)
 - SQL Server Management Studio
-- Visual Studio 2019 .NET Core 3.1 SDK-val telepítve
+- Visual Studio 2019 v16.8 (vagy újabb) .NET 5 SDK-val telepítve
 - Adatbázis létrehozó script: [mssql.sql](https://raw.githubusercontent.com/BMEVIAUBB04/gyakorlat-mssql/master/mssql.sql)
 
 Amit érdemes átnézned:
@@ -45,7 +45,7 @@ Az EF, mint ORM eszköz használatához az alábbi összetevőkre van szükség:
 - adatbázis kapcsolódási adatok, connection string formátumban
 
 Az objektummodellt és a leképezést generáltatni fogjuk az adatbázis alapján - ez az ún. Reverse Engineering modellezési módszer.
-1. Hozzunk létre Visual Studio-ban egy .NET Core alapú C# nyelvű konzolalkalmazást. Próbáljuk ki, hogy működik-e, kiíródik-e a "Hello World".
+1. Hozzunk létre Visual Studio-ban egy .NET 5 alapú C# nyelvű konzolalkalmazást. Ehhez válasszuk ki a C# nyelvű konzolalkalmazás sablonok közül a simát vagy a .NET Core jelölésűt (de ne a .NET Framework jelölésűt). Futtatókörnyezetként válasszuk a .NET 5-öt. Próbáljuk ki, hogy működik-e, kiíródik-e a "Hello World".
 2. Nyissuk meg a Package Manager Console-t (PMC) a Tools -> NuGet Package Manager -> Package Manager Console menüponttal
 3. Telepítsük fel az EF kódgenerátor eszközt projektfüggőségként, illetve az SQL Server adatbázis drivert. A generátor eszköznek már kapcsolódnia kell az adatbázishoz, amihez szüksége van a driverre. PMC-ben hajtsuk végre:
 
@@ -56,7 +56,7 @@ Install-Package Microsoft.EntityFrameworkCore.SqlServer
 Ezek a csomagok függőségként magát az Entity Framework Core-t is telepítik.
 
 4. Generáltassuk az adatbázismodellt az alábbi paranccsal. Paraméterei: kapcsolódási adatok (Connection), adatbázis driver neve (Provider), a projekten belül a generálandó fájlok könyvtára (OutputDir), a generálandó adatbáziskontextus neve (Context). 
-[itt](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/powershell#scaffold-dbcontext). A connection string-ben ne felejtsük el átírni az értékeket, pl. a neptun kódot kitölteni.
+[Dokumentáció itt](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/powershell#scaffold-dbcontext). A connection string-ben ne felejtsük el átírni az értékeket, pl. a neptun kódot kitölteni.
 A connection string szerkezete SQL Server esetén: kulcs=érték párok pontosvesszővel elválasztva. Nekünk most az alábbi adatok kellenek:
   - Server - a szerver neve
   - Database - adatbázis neve a szerveren belül (ez ennél a gyakorlatnál a neptun kód lesz)
