@@ -10,7 +10,7 @@ A labor elvégzéséhez szükséges eszközök:
 
 - Microsoft SQL Server (LocalDB vagy Express edition)
 - SQL Server Management Studio
-- Visual Studio 2019 .NET Core 3.1 SDK-val telepítve
+- Visual Studio 2019 v16.8 (vagy újabb) .NET 5 SDK-val telepítve
 - Adatbázis létrehozó script: [mssql.sql](https://raw.githubusercontent.com/BMEVIAUBB04/gyakorlat-mssql/master/mssql.sql)
 
 Amit érdemes átnézned:
@@ -45,8 +45,8 @@ Az EF, mint ORM eszköz használatához az alábbi összetevőkre van szükség:
 - adatbázis kapcsolódási adatok, connection string formátumban
 
 Az objektummodellt és a leképezést generáltatni fogjuk az adatbázis alapján - ez az ún. Reverse Engineering modellezési módszer.
-1. Hozzunk létre Visual Studio-ban egy .NET Core alapú C# nyelvű konzolalkalmazást. Próbáljuk ki, hogy működik-e, kiíródik-e a "Hello World".
-2. Nyissuk meg a Package Manager Console-t (PMC) a Tools -> NuGet Package Manager -> Package Manager Console menüponttal
+1. Hozzunk létre Visual Studio-ban egy .NET 5 alapú C# nyelvű konzolalkalmazást. Ehhez válasszuk ki a C# nyelvű konzolalkalmazás sablonok közül a simát vagy a .NET Core jelölésűt (de ne a .NET Framework jelölésűt). Futtatókörnyezetként válasszuk a .NET 5-öt. Próbáljuk ki, hogy működik-e, kiíródik-e a "Hello World".
+2. Nyissuk meg a Package Manager Console-t (PMC) a Tools :arrow_right: NuGet Package Manager :arrow_right: Package Manager Console menüponttal
 3. Telepítsük fel az EF kódgenerátor eszközt projektfüggőségként, illetve az SQL Server adatbázis drivert. A generátor eszköznek már kapcsolódnia kell az adatbázishoz, amihez szüksége van a driverre. PMC-ben hajtsuk végre:
 
 ```powershell
@@ -56,15 +56,16 @@ Install-Package Microsoft.EntityFrameworkCore.SqlServer
 Ezek a csomagok függőségként magát az Entity Framework Core-t is telepítik.
 
 4. Generáltassuk az adatbázismodellt az alábbi paranccsal. Paraméterei: kapcsolódási adatok (Connection), adatbázis driver neve (Provider), a projekten belül a generálandó fájlok könyvtára (OutputDir), a generálandó adatbáziskontextus neve (Context). 
-[itt](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/powershell#scaffold-dbcontext). A connection string-ben ne felejtsük el átírni az értékeket, pl. a neptun kódot kitölteni.
+[Dokumentáció itt](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/powershell#scaffold-dbcontext). A connection string-ben ne felejtsük el átírni az értékeket, pl. a neptun kódot kitölteni.
 A connection string szerkezete SQL Server esetén: kulcs=érték párok pontosvesszővel elválasztva. Nekünk most az alábbi adatok kellenek:
   - Server - a szerver neve
   - Database - adatbázis neve a szerveren belül (ez ennél a gyakorlatnál a neptun kód lesz)
-  - Trusted_Connection=True - ez a Windows authentikációt takarja.
+  - Trusted_Connection=True - ez a Windows authentikációt takarja
+  - NoPluralize - a táblák eléréshez többesszámosított property nevek generálódnának alapból, viszont ez csak angol nyelvű táblaneveknél működne jól, ezért ezt a funkciót kikapcsoljuk
 A connection string szerkezete gyártónként eltér és elég sok paramétere lehet. Bővebben [itt](https://www.connectionstrings.com/).
 
 ```powershell
-Scaffold-DbContext -Connection "Server=(localdb)\mssqllocaldb;Database=<neptun>;Trusted_Connection=True;" -Provider Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Context ACMEShop
+Scaffold-DbContext -Connection "Server=(localdb)\mssqllocaldb;Database=<neptun>;Trusted_Connection=True;" -Provider Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Context ACMEShop -NoPluralize
 ```
 
 A generált kódban figyeljük meg az alábbiakat:
@@ -92,40 +93,30 @@ using (ACMEShop ctx = new ACMEShop()) // kontext létrehozása. Using blokk, mer
 }
 ```
 
-Próbáljuk ki, örvendezzünk, hogy milyen egyszerű és elegáns a kód. Semmilyen SQL stringet/ SQL kódot nem kellett írnunk.
+Próbáljuk ki, örvendezzünk, hogy milyen egyszerű és elegáns a kód. Semmilyen SQL stringet / SQL kódot nem kellett írnunk.
 
 ## Feladat 3: Nyomkövetés (trace)
 
-Minden olyan ORM használatakor, ahol az ORM állítja elő az SQL-t, elementárisan fontos, hogy lássuk, milyen SQL fut le az adatbázisszerveren. Nyomkövetni lehet az adatbázis oldalán (adatbázis eszközzel), illetve a programunk oldalán (nyomkövető komponenssel) is. Előbbire példa SQL Server esetén az SQL Server Profiler [Trace eszköze](https://docs.microsoft.com/en-us/sql/tools/sql-server-profiler/create-a-trace-sql-server-profiler). Mi most az utóbbi irányt követjük. Adjunk hozzá a projektünkhöz egy általános naplózó komponenst, ami a _Debug_ kimenetre naplóz.
-
-A PMC segítségével telepítsük a naplózó komponenst:
-
-```powershell
-Install-Package Microsoft.Extensions.Logging.Debug
-```
-
-A `Program` osztályba, függvényen kívül:
+Minden olyan ORM használatakor, ahol az ORM állítja elő az SQL-t, elementárisan fontos, hogy lássuk, milyen SQL fut le az adatbázisszerveren. Nyomkövetni lehet az adatbázis oldalán (adatbázis eszközzel), illetve a programunk oldalán (nyomkövető komponenssel) is. Előbbire példa SQL Server esetén az SQL Server Profiler [Trace eszköze](https://docs.microsoft.com/en-us/sql/tools/sql-server-profiler/create-a-trace-sql-server-profiler). Mi most az utóbbi irányt követjük. A kontext `OnConfiguring` függvényébe:
 
 ```csharp
- public static readonly ILoggerFactory DaLogger
-            = LoggerFactory.Create(builder => { builder.AddDebug(); });
-```
-
-Ezzel létrehoztunk egy debug kimenetre naplózó infrastruktúrát (pontosabban ennek gyártóját), ezt adjuk meg az EF kotextusnak, mely beépítetten naplóz (ha van hova). A kontext `OnConfiguring` függvényébe:
-
-```csharp
-optionsBuilder //ez maradjon meg változatlanul
-  .UseLoggerFactory(Program.DaLogger) //ez a rész ékelődjön be
-    .UseSqlServer("connection string"); //ez a rész is maradjon változatlan
+optionsBuilder.UseSqlServer("connection string") //ez a rész maradjon változatlan
+	.LogTo(message => System.Diagnostics.Debug.WriteLine(message),LogLevel.Information); //ez a rész ékelődjön be a ; elé
 ```
 
 A debug kimenet az Output ablakra van kötve - viszont csak akkor, ha a Visual Studio debugger csatlakoztatva van. Ezért fontos, hogy ha látni akarjuk az EF naplókat, akkor **Debug módban (zöld nyíl, F5 billentyű) futtassuk az alkalmazást**.
 
 Próbáljuk ki, az Output ablak alján meg kell jelennie egy hasonló SQL-nek:
 
-> Microsoft.EntityFrameworkCore.Database.Command: Information: Executed DbCommand (42ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+> info: [időbélyeg] RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+> 
+> &nbsp;&nbsp;&nbsp;&nbsp;Executed DbCommand (26ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+>      
+> &nbsp;&nbsp;&nbsp;&nbsp;SELECT [v].[ID], [v].[Email], [v].[Jelszo], [v].[KozpontiTelephely], [v].[Login], [v].[Nev], [v].[Szamlaszam]
+>      
+> &nbsp;&nbsp;&nbsp;&nbsp;FROM [Vevo] AS [v]
 
->SELECT [v].[ID], [v].[Email], [v].[Jelszo], [v].[KozpontiTelephely], [v].[Login], [v].[Nev], [v].[Szamlaszam] FROM [Vevo] AS [v]
+Ha hibakeresés miatt részletesebb naplóra van szükség, akkor a `LogLevel` típusú paramétert (ideiglenesen) állítsuk `Loglevel.Debug`-ra.
 
 ## Feladat 4: CRUD műveletek (közös)
 
@@ -174,7 +165,7 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
 
    </details>
    
-1. Melyek azok a fizetési módok, amit soha nem választottak a megrendelőink?
+1. Melyek azok a fizetési módok, amiket soha nem választottak a megrendelőink?
 
    <details><summary markdown="span">Megoldás</summary>
 
@@ -219,7 +210,7 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
    fakocka.Nev = "Fakocka";
    ctx.SaveChanges();
    ```
-   Első lépésként le kell kérdeznünk a módosítandó entitást, elvégezni a módosítást, amit a kontext megintcsak nyilvántart, végül érvényesíteni a módosításokat. A Watch ablakban figyeljük meg a kontext által nyilvántartott állapot változását a `ctx.Entry(fakocka).State` kifejezés figyelésével. Ellenőrizzük a változást az adatbázisban.
+   Első lépésként le kell kérdeznünk a módosítandó entitást, elvégezni a módosítást, amit a kontext megint csak nyilvántart, végül érvényesíteni a módosításokat. A Watch ablakban figyeljük meg a kontext által nyilvántartott állapot változását a `ctx.Entry(fakocka).State` kifejezés figyelésével. Ellenőrizzük a változást az adatbázisban.
    
     A megoldás után ezt a részt kommentezzük ki, ha nincs az adatbázisban fajáték, a `Single` kivételt fog dobni, mivel pontosan egy darab rekordot vár.
     
@@ -238,7 +229,10 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
    var maxkat=ctx.Kategoria
    	.Where(k => k.Termek.Count == ctx.Kategoria.Max(kk=>kk.Termek.Count))
 	.Select(k=>k.Nev);
-   
+   foreach (var k in maxkat)
+   {
+     Console.WriteLine(k);
+   }
    
    //navigációs propertyvel - működik, de két lekérdezés
    var maxkat = ctx.Kategoria.Select(kk => kk.Termek.Count)
