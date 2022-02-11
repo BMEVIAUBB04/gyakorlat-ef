@@ -272,7 +272,7 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
 1. Írjuk ki a 2008. februári rendelések azonosítóját és ezen rendelések dátumát!
 1. Írjuk ki azon rendelések azonosítóját, dátumát és határidejét, amelyeknél a határidő 5 napnál szűkebb a rendelés dátumához képest! (**Nehéz!** :scream:, TIPP: `EF.Functions.DateDiffDay(<dátum>,<határidő>)`)
 1. Hány vevőnek van gmail-es e-mail címe?
-1. Melyik vevőknek van egynél több telephelye? Írjuk ki ezen vevők nevét és telephelyeik számát! TODO: tippet írni
+1. Melyik vevőknek van egynél több telephelye? Írjuk ki ezen vevők nevét és telephelyeik számát! TODO: tippet írni, anoním típus
 1. Mely vevő(k) adták le a legtöbb tételből álló rendelést? (Több ilyen is lehet!) Írjuk ki ezen vevők nevét! (**Nehéz!** :scream: TIPP: lásd a közös feladatokból a hasonlót)
 
 ---
