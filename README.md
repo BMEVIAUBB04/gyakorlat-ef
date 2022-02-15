@@ -10,7 +10,7 @@ A labor elvégzéséhez szükséges eszközök:
 
 - Microsoft SQL Server (LocalDB vagy Express edition)
 - SQL Server Management Studio
-- Visual Studio 2019 v16.8 (vagy újabb) .NET 5 SDK-val telepítve
+- Visual Studio 2022 .NET 6 SDK-val telepítve
 - Adatbázis létrehozó script: [mssql.sql](https://raw.githubusercontent.com/BMEVIAUBB04/gyakorlat-mssql/master/mssql.sql)
 
 Amit érdemes átnézned:
@@ -223,7 +223,8 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
 
    ```csharp
    //naív megoldás, csak egy eredmény
-   Console.WriteLine(ctx.Kategoria.OrderByDescending(k => k.Termek.Count()).Select(k=>k.Nev).First());
+   Console.WriteLine(ctx.Kategoria.OrderByDescending(k => k.Termek.Count())
+				  .Select(k=>k.Nev).First());
    
    //navigációs propertyvel - kivételt dob!   
    var maxkat=ctx.Kategoria
