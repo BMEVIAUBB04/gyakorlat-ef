@@ -62,6 +62,7 @@ A connection string szerkezete SQL Server esetén: kulcs=érték párok pontosve
   - Database - adatbázis neve a szerveren belül (ez ennél a gyakorlatnál a neptun kód lesz)
   - Trusted_Connection=True - ez a Windows authentikációt takarja
   - NoPluralize - a táblák eléréshez többesszámosított property nevek generálódnának alapból, viszont ez csak angol nyelvű táblaneveknél működne jól, ezért ezt a funkciót kikapcsoljuk
+  
 A connection string szerkezete gyártónként eltér és elég sok paramétere lehet. Bővebben [itt](https://www.connectionstrings.com/).
 
 Szintén PMC-ben:
