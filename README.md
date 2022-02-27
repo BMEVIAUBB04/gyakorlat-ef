@@ -204,7 +204,7 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
    A megoldás után ezt a részt kommentezzük ki, ne szúrjunk be minden kipróbálásnál új sort.
    </details>
 
-1. A kategóriák között hibásan szerepel az _Fajáték_ kategória név. Javítsuk át a kategória nevét *Fakocká*ra!
+1. A kategóriák között hibásan szerepel az _Fajáték_ kategória név. Javítsuk át a kategória nevét *Fakockák*ra!
 
    <details><summary markdown="span">Megoldás</summary>
 
@@ -282,15 +282,14 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
 ## Feladat 4: Lekérdezések (önálló)
 
 1. Mely termékek ÁFA kulcsa 15%-os? Írjuk ki ezen termékek nevét!
-1. Melyik város(ok)ba kérték a legtöbb rendelést? (**Nehéz!** :scream: TIPP: lásd a közös feladatokból a hasonlót)
-1. Melyek azok a vevők, akik legalább 2-szer rendeltek már? Írjuk ki ezen vevők nevét és hogy hányszor rendeltek!
+1. Melyik város(ok)ba kérték a legtöbb rendelést? (**Nehéz!** :scream: TIPP: lásd a közös feladatokból a hasonlót. Egy lehetséges megoldás, ha először a megrendeléseket csoportosítjuk a kapcsolódó város neve szerint a `GroupBy` operátorral, majd vesszük minden csoport kulcsát és a csoport számosságát. Ezután ezen allekérdezésből kiindulva kell kikeresni, hogy melyek azok az allekérdezés elemek, amelyeknél nincsenek nagyobb számosságú más allekérdezés elemek.)
+1. Melyek azok a vevők, akik legalább 2-szer rendeltek már? Írjuk ki ezen vevők nevét és hogy hányszor rendeltek! (**Nehéz!** :scream: TIPP: Így használhatjuk a `SelectMany` LINQ operátort egy `v` Vevo összes rendelésének összeszedésére: `v.Telephely.SelectMany(t => t.Megrendeles)`. A `SelectMany`-t akkor használjuk, ha egy kollekció minden elemhez egy kollekciót rendelünk, de az eredményt nem listák listájaként szeretnénk megkapni, hanem csak sima kilapított listaként).
 1. Mely számláknál nem egyezik meg a kiállítás és teljesítés dátuma? Írjuk ki ezen számlák azonosítóját!
 1. Írjuk ki a 2008. februári rendelések azonosítóját és ezen rendelések dátumát!
-1. Írjuk ki azon rendelések azonosítóját, dátumát és határidejét, amelyeknél a határidő 5 napnál szűkebb a rendelés dátumához képest! (**Nehéz!** :scream:, TIPP: `EF.Functions.DateDiffDay(<dátum>,<határidő>)`)
+1. Írjuk ki azon rendelések azonosítóját, dátumát és határidejét, amelyeknél a határidő 5 napnál szűkebb a rendelés dátumához képest! (**Nehéz!** :scream:, TIPP: `EF.Functions.DateDiffDay(<dátum>,<határidő>)` megadja a `dátum` és `határidő` között eltelt napok számát)
 1. Hány vevőnek van gmail-es e-mail címe?
 1. Melyik vevőknek van egynél több telephelye? Írjuk ki ezen vevők nevét és telephelyeik számát!
-1. Mely vevő(k) adták le a legtöbb tételből álló rendelést? (Több ilyen is lehet!) Írjuk ki ezen vevők nevét! (**Nehéz!** :scream: TIPP: lásd a közös feladatokból a hasonlót)
-
+1. Mely vevő(k) adták le a legtöbb tételből álló rendelést? (Több ilyen is lehet!) Írjuk ki ezen vevők nevét! (**Nehéz!** :scream: TIPP: lásd a közös feladatokból a hasonlót. Egy lehetséges megoldás, ha először minden megrendeléshez kiszámoljuk a kapcsolódó vevő nevét és a megrendelés tételeinek számát. Ezután ezen allekérdezésből kiindulva kell kikeresni, hogy melyek azok az allekérdezés elemek, emelyeknél nincsenek nagyobb tételszámú más allekérdezés elemek.)
 ---
 
 Az itt található oktatási segédanyagok a BMEVIAUBB04 tárgy hallgatóinak készültek. Az anyagok oly módú felhasználása, amely a tárgy oktatásához nem szorosan kapcsolódik, csak a szerző(k) és a forrás megjelölésével történhet.
