@@ -174,7 +174,7 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
 
    ```csharp
    var fmList=ctx.FizetesMod.Where(fm => !fm.Megrendeles.Any()).Select(fm=>fm.Mod);
-   foreach (string fm in fmList)
+   foreach (string? fm in fmList)
    {
        Console.WriteLine(fm);
    }
@@ -204,13 +204,13 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
    A megoldás után ezt a részt kommentezzük ki, ne szúrjunk be minden kipróbálásnál új sort.
    </details>
 
-1. A kategóriák között hibásan szerepel az _Fajáték_ kategória név. Javítsuk át a kategória nevét *Fakockák*ra!
+1. A kategóriák között hibásan szerepel az _Fajáték_ kategória név. Javítsuk át a kategória nevét *Fakocká*ra!
 
    <details><summary markdown="span">Megoldás</summary>
 
    ```csharp
    var fakocka = ctx.Kategoria.Single(k => k.Nev == "Fajáték");
-   fakocka.Nev = "Fakocka";
+   fakocka.Nev = "Fakockák";
    ctx.SaveChanges();
    ```
    Első lépésként le kell kérdeznünk a módosítandó entitást, elvégezni a módosítást, amit a kontext megint csak nyilvántart, végül érvényesíteni a módosításokat. A Watch ablakban figyeljük meg a kontext által nyilvántartott állapot változását a `ctx.Entry(fakocka).State` kifejezés figyelésével. Ellenőrizzük a változást az adatbázisban.
@@ -248,28 +248,42 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
       Console.WriteLine(k);
    }
 
-   //navigációs property + group by - egy lekérdezés és még működik is!
-   var maxkat = ctx.Kategoria.Where
-   (
-        g => g.Termek.Count == ctx.Termek
-                                .GroupBy(k => k.KategoriaId)
-                                .Max(g => g.Count())
-   ).Select(k=>k.Nev);
-   foreach (var k in maxkat)
-   {
+   //másik megközelítés: azokat a kategóriákat keressük, amiknél nincs több termékes kategória
+   //egy lekérdezés és működik is
+   var maxkat= ctx.Kategoria
+	.Where(k1=>!ctx.Kategoria.Any(k2=> k2.Termek.Count > k1.Termek.Count))
+        .Select(k=>k.Nev);
+  foreach (var k in maxkat)
+  {
      Console.WriteLine(k);
-   }
+  }
       
    ```
 
    Sajnos elég nehéz olyan lekérdezést összerakni C#-ban, ami az SQL összerakásánál ne dobna kivételt vagy ne több lekérdezésből állna :cold_sweat:. Nem minden logikailag helyes, forduló LINQ kód alakítható SQL-lé, ráadásul ez csak futási időben derül ki. Érdemes ilyenkor megírni a sima SQL-t és ahhoz hasonlóan összerakni a C# kódot, plusz minden lekérdezést legalább egyszer **erősen** ajánlott kipróbálni futás közben is.
 
    </details>
+   
+1. Az egyes telephelyekre hány rendelés volt eddig? Írjuk ki a telephelyek azonosítóját és a rendelések számát!
+   <details><summary markdown="span">Megoldás</summary>
+
+   ```csharp
+    var tmegrList = ctx.Telephely.Select(t => new { t.Id, MegrendelesSzam = t.Megrendeles.Count });
+    foreach (var tmegr in tmegrList)
+    {
+        Console.WriteLine($"{tmegr.Id}-{tmegr.MegrendelesSzam}");
+    }      
+   ```
+
+   Gyakran alkalmazzuk a `Select` operátorban az anonim típusokat. Ezekben a típusokban mi mondjuk meg, hogy milyen nevű property-k legyenek és azok hogyan töltődjelenek fel. Bár a típus nevét nem ismerjük (anonim), de tudunk hivatkozni a property-jeire a megadott névvel.
+
+   </details>
+
+
 
 ## Feladat 4: Lekérdezések (önálló)
 
 1. Mely termékek ÁFA kulcsa 15%-os? Írjuk ki ezen termékek nevét!
-1. Az egyes telephelyekre hány rendelés volt eddig? Írjuk ki a telephelyek azonosítóját és a rendelések számát!
 1. Melyik város(ok)ba kérték a legtöbb rendelést? (**Nehéz!** :scream: TIPP: lásd a közös feladatokból a hasonlót)
 1. Melyek azok a vevők, akik legalább 2-szer rendeltek már? Írjuk ki ezen vevők nevét és hogy hányszor rendeltek!
 1. Mely számláknál nem egyezik meg a kiállítás és teljesítés dátuma? Írjuk ki ezen számlák azonosítóját!
