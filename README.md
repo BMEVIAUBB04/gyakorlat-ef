@@ -45,7 +45,7 @@ Az EF, mint ORM eszköz használatához az alábbi összetevőkre van szükség:
 - adatbázis kapcsolódási adatok, connection string formátumban
 
 Az objektummodellt és a leképezést generáltatni fogjuk az adatbázis alapján - ez az ún. Reverse Engineering modellezési módszer.
-1. Hozzunk létre Visual Studio-ban egy .NET 5 alapú C# nyelvű konzolalkalmazást. Ehhez válasszuk ki a C# nyelvű konzolalkalmazás sablonok közül a simát (ne a .NET Framework jelölésűt). Futtatókörnyezetként válasszuk a .NET 6-ot. Próbáljuk ki, hogy működik-e, kiíródik-e a "Hello World".
+1. Hozzunk létre Visual Studio-ban egy .NET 5 alapú C# nyelvű konzolalkalmazást. Ehhez válasszuk ki a C# nyelvű konzolalkalmazás sablonok közül a simát (ne a .NET Framework jelölésűt). Futtatókörnyezetként válasszuk a .NET 6-ot. Próbáljuk ki, hogy működik-e, kiíródik-e a "Hello World". .NET6-ban nem kell `Main` függvényt írni, egy darab kódfájlban (jelenleg a Program.cs-ben) írhatunk egyből utasításokat, nem kell se függvény, se osztályt létrehoznunk -ez lesz a progrtam belépési pontja.
 2. Nyissuk meg a Package Manager Console-t (PMC) a Tools :arrow_right: NuGet Package Manager :arrow_right: Package Manager Console menüponttal
 3. Telepítsük fel az EF kódgenerátor eszközt projektfüggőségként, illetve az SQL Server adatbázis drivert. A generátor eszköznek már kapcsolódnia kell az adatbázishoz, amihez szüksége van a driverre. PMC-ben hajtsuk végre:
 
@@ -64,6 +64,7 @@ A connection string szerkezete SQL Server esetén: kulcs=érték párok pontosve
   - NoPluralize - a táblák eléréshez többesszámosított property nevek generálódnának alapból, viszont ez csak angol nyelvű táblaneveknél működne jól, ezért ezt a funkciót kikapcsoljuk
 A connection string szerkezete gyártónként eltér és elég sok paramétere lehet. Bővebben [itt](https://www.connectionstrings.com/).
 
+Szintén PMC-ben:
 ```powershell
 Scaffold-DbContext -Connection "Server=(localdb)\mssqllocaldb;Database=<neptun>;Trusted_Connection=True;" -Provider Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Context ACMEShop -NoPluralize
 ```
@@ -72,7 +73,7 @@ A generált kódban figyeljük meg az alábbiakat:
   - az egyes táblabeli soroknak (rekordoknak) megfelelő C# osztályokat (pl. Termek.cs), azon belül az oszlopoknak megfelelő egyszerű property-ket és a kapcsolódó tábláknak megfelelő más osztályok típusával rendelkező navigációs property-ket (pl. `Termek.Afa`). Ezek alkotják az objektummodellt.
   - a kontextusosztályt (pl. ACMEShop.cs), ami az általunk megadott névvel jött létre és magának az adatbázisnak a leképezése. Tartalmazza:
     - a tábláknak megfelelő `DbSet<RekordTipus>` property-ket, ezek a tábláknak felelenek meg
-    - az adatbázis szintű konfigurációt (`OnConfiguring` függvény), pl. kapcsolódási adatokat, bár azt inkább külön konfig fájlban szoktuk tárolni
+    - az adatbázis szintű konfigurációt (`OnConfiguring` függvény), pl. kapcsolódási adatokat, bár azt inkább külön konfig fájlban szoktuk tárolni, nem a kódban (erre van is figyelmeztetés a generált kódban)
     - a leképezések kódját az `OnModelCreating` függvényben. Minden rekordtípus minden property-jére megadja, hogy melyik tábla melyik oszlopára lépződik. Navigációs property-knél megadja a kapcsolat egyes résztvevőinek számosságát (1-N-es, N-N-es), valamint ha van, akkor az idegen kulcs kényszert is.
 
 Mindezzel minden összetevőt létrehoztunk az EF alapinfrastruktúrához.
@@ -81,7 +82,7 @@ Mindezzel minden összetevőt létrehoztunk az EF alapinfrastruktúrához.
 
 Írjuk meg az első EF Core lekérdezésünket. Az SQL mérés alapján itt is kérdezzük le az összes vevőt, majd írjuk ki azonosítójukat, nevüket és felhasználói nevüket is.
 
-A `Main` függvénybe:
+A Program.cs-be:
 
 ```csharp
 using (ACMEShop ctx = new ACMEShop()) // kontext létrehozása. Using blokk, mert használat után illik az adatbáziskapcsolatot lezárni.
@@ -142,13 +143,15 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
    //bármelyik jó a két alábbi lekérdezés közül
    var termeknevek = ctx.MegrendelesTetel.Select(mt => mt.Termek.Nev).Distinct(); //MegrendelesTetel -> Termek
    //var termeknevek = ctx.Termek.Where(mt => mt.MegrendelesTetel.Any()).Select(t => t.Nev); //Termek -> MegrendelesTetel
-   foreach (string tn in termeknevek)
+   foreach (string? tn in termeknevek)
    {
      Console.WriteLine(tn);
    }
    ```
    
    Használjuk a navigációs property-ket és a `System.Linq` névtérben található LINQ operátorokat. Kiindulhatunk a termék, illetve a megrendeléstétel táblából (`DbSet`-ből) is. Érdemes kipróbálni mind a két változatot - nem ugyanolyan SQL generálódik.
+	
+   A `string` utáni kérdőjel nem kötelező, azzal jelezzük, hogy az érték lehet `null` is. Hiszen a terméknév nem kötelező adat az adatbázisban.
    
    </details>
    
