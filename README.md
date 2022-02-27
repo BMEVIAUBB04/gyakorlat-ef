@@ -253,12 +253,11 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
    var maxkat= ctx.Kategoria
 	.Where(k1=>!ctx.Kategoria.Any(k2=> k2.Termek.Count > k1.Termek.Count))
         .Select(k=>k.Nev);
-  foreach (var k in maxkat)
-  {
-     Console.WriteLine(k);
-  }      
-  ```
-
+   foreach (var k in maxkat)
+   {
+      Console.WriteLine(k);
+   }      
+   ```
    Sajnos elég nehéz olyan lekérdezést összerakni C#-ban, ami az SQL összerakásánál ne dobna kivételt vagy ne több lekérdezésből állna :cold_sweat:. Nem minden logikailag helyes, forduló LINQ kód alakítható SQL-lé, ráadásul ez csak futási időben derül ki. Érdemes ilyenkor megírni a sima SQL-t és ahhoz hasonlóan összerakni a C# kódot, plusz minden lekérdezést legalább egyszer **erősen** ajánlott kipróbálni futás közben is.
 
    </details>
