@@ -284,7 +284,7 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
 1. Mely termékek ÁFA kulcsa 15%-os? Írjuk ki ezen termékek nevét!
 1. Melyik város(ok)ba kérték a legtöbb rendelést? (**Nehéz!** :scream:)
    <details><summary markdown="span">Tipp</summary>
-   Lásd a közös feladatokból a hasonlót. Egy lehetséges megoldás, ha először a megrendeléseket csoportosítjuk a kapcsolódó város neve szerint a `GroupBy` operátorral, majd vesszük minden csoport kulcsát és a csoport számosságát. Ezután ezen allekérdezésből kiindulva kell kikeresni, hogy melyek azok az allekérdezés elemek, amelyeknél nincsenek nagyobb számosságú más allekérdezés elemek.	
+   Lásd a közös feladatokból a hasonlót. Egy lehetséges megoldás, ha először a megrendeléseket csoportosítjuk a kapcsolódó város neve szerint a `GroupBy` operátorral, majd vesszük minden csoport kulcsát és a csoport számosságát. Ezután ezen allekérdezésből kiindulva kell kikeresni, hogy melyek azok az allekérdezés elemek, amelyeknél nincsenek nagyobb számosságú más allekérdezés elem.	
    </details>
 3. Melyek azok a vevők, akik legalább 2-szer rendeltek már? Írjuk ki ezen vevők nevét és hogy hányszor rendeltek! (**Nehéz!** :scream:).
    <details><summary markdown="span">Tipp</summary>
@@ -297,7 +297,7 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
 9. Melyik vevőknek van egynél több telephelye? Írjuk ki ezen vevők nevét és telephelyeik számát!
 10. Mely vevő(k) adták le a legtöbb tételből álló rendelést? (Több ilyen is lehet!) Írjuk ki ezen vevők nevét! (**Nehéz!** :scream:)
     <details><summary markdown="span">Tipp</summary>
-    Lásd a közös feladatokból a hasonlót. Egy lehetséges megoldás, ha először minden megrendeléshez kiszámoljuk a kapcsolódó vevő nevét és a megrendelés tételeinek számát. Ezután ezen allekérdezésből kiindulva kell kikeresni, hogy melyek azok az allekérdezés elemek, emelyeknél nincsenek nagyobb tételszámú más allekérdezés elemek.
+    Lásd a közös feladatokból a hasonlót. Egy lehetséges megoldás, ha először minden megrendeléshez kiszámoljuk a kapcsolódó vevő nevét és a megrendelés tételeinek számát. Ezután ezen allekérdezésből kiindulva kell kikeresni, hogy melyek azok az allekérdezés elemek, emelyeknél nincsenek nagyobb tételszámú más allekérdezés elem.
     </details>
 ---
 
