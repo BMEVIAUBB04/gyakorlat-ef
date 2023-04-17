@@ -280,7 +280,7 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
 
 
 
-## Feladat 4: Lekérdezések (önálló)
+## Feladat 5: Lekérdezések (önálló)
 
 1. Mely termékek ÁFA kulcsa 15%-os? Írjuk ki ezen termékek nevét!
 1. Melyik város(ok)ba kérték a legtöbb rendelést? (**Nehéz!** :scream:)
