@@ -2,7 +2,7 @@
 
 ## Célkitűzés
 
-ORM alapú adatbáziskezelés alapjainak elsajátítása [CRUD műveletek](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) írásán keresztül. LINQ-to-Entities lekérdezések írásának gyakorlása.
+ORM-alapú adatbáziskezelés alapjainak elsajátítása [CRUD-műveletek](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) írásán keresztül. _LINQ to Entities_-lekérdezések írásának gyakorlása.
 
 ## Előfeltételek
 
@@ -32,32 +32,32 @@ Az utolsó feladatot leszámítva a feladatokat a gyakorlatvezetővel együtt ol
 
 ## Feladat 0: Adatbázis létrehozása, ellenőrzése
 
-Az adatbázis az adott géphez kötött, ezért nem biztos, hogy a korábban létrehozott adatbázis most is létezik. Ezért először ellenőrizzük, és ha nem találjuk, akkor hozzuk létre újra az adatbázist. (Ennek mikéntjét lásd a ["Tranzakciókezelés" gyakorlat anyagában](https://bmeviaubb04.github.io/gyakorlat-tranzakciok/).)
+Az adatbázis az adott géphez kötött, ezért nem biztos, hogy a korábban létrehozott adatbázis most is létezik. Ezért először ellenőrizzük, és ha nem találjuk, akkor hozzuk létre újra az adatbázist. (Ennek mikéntjét lásd a [_Tranzakciókezelés_ gyakorlat anyagában](https://bmeviaubb04.github.io/gyakorlat-tranzakciok/).)
 
-## Feladat 1: EF alapinfrastruktúra kialakítása
+## Feladat 1: EF-alapinfrastruktúra kialakítása
 
-Az EF, mint ORM eszköz használatához az alábbi összetevőkre van szükség:
-- **o**bjektummodel kódban
+Az EF, mint ORM-eszköz használatához az alábbi összetevőkre van szükség:
+- **o**bjektummodel a kódban
 - **r**elációs modell az adatbázisban - ez már kész
-- leképezés (**m**apping) az előbbi kettő között, szintén kódban megadva
+- leképezés (**m**apping) az előbbi kettő között, szintén a kódban megadva
 - maga az Entity Framework Core, mint komponens
-- Entity Framework Core kompatibilis adatbázis driver
-- adatbázis kapcsolódási adatok, connection string formátumban
+- Entity Framework Core-kompatibilis adatbázisdriver
+- adatbáziskapcsolódási adatok, _connection string_ formátumban
 
 Az objektummodellt és a leképezést generáltatni fogjuk az adatbázis alapján - ez az ún. Reverse Engineering modellezési módszer.
-1. Hozzunk létre Visual Studio-ban egy .NET 5 alapú C# nyelvű konzolalkalmazást. Ehhez válasszuk ki a C# nyelvű konzolalkalmazás sablonok közül a simát (ne a .NET Framework jelölésűt). Futtatókörnyezetként válasszuk a .NET 6-ot. Próbáljuk ki, hogy működik-e, kiíródik-e a "Hello World". .NET6-ban nem kell `Main` függvényt írni, a belépési pontnak szánt kódfájlban (jelenleg a Program.cs-ben) írhatunk egyből utasításokat, nem kell se függvényt, se osztályt létrehoznunk.
-2. Nyissuk meg a Package Manager Console-t (PMC) a Tools :arrow_right: NuGet Package Manager :arrow_right: Package Manager Console menüponttal
-3. Telepítsük fel az EF kódgenerátor eszközt projektfüggőségként, illetve az SQL Server adatbázis drivert. A generátor eszköznek már kapcsolódnia kell az adatbázishoz, amihez szüksége van a driverre. PMC-ben hajtsuk végre:
+1. Hozzunk létre Visual Studio-ban egy .NET 6 alapú C# nyelvű konzolalkalmazást. Ehhez válasszuk ki a C# nyelvű konzolalkalmazás sablonok közül a simát (ne a _.NET Framework jelölésűt). Futtatókörnyezetként válasszuk a .NET 6-ot. Próbáljuk ki, hogy működik-e, kiíródik-e a "Hello, World!". .NET 6-ban nem kell `Main` függvényt írni, a belépési pontnak szánt kódfájlban (jelenleg a Program.cs-ben) írhatunk egyből utasításokat, nem kell se függvényt, se osztályt létrehoznunk.
+2. Nyissuk meg a Package Manager Console-t (PMC) a _Tools :arrow_right: NuGet Package Manager :arrow_right: Package Manager Console_ menüponttal
+3. Telepítsük fel az EF-kódgenerátor eszközt projektfüggőségként, illetve az SQL Server adatbázisdrivert. A generátoreszköznek már kapcsolódnia kell az adatbázishoz, amihez szüksége van a driverre. PMC-ben hajtsuk végre:
 
 ```powershell
-Install-Package Microsoft.EntityFrameworkCore.Tools
-Install-Package Microsoft.EntityFrameworkCore.SqlServer
+Install-Package Microsoft.EntityFrameworkCore.Tools -Version 6.0.28
+Install-Package Microsoft.EntityFrameworkCore.SqlServer -Version 6.0.28
 ```
 Ezek a csomagok függőségként magát az Entity Framework Core-t is telepítik.
 
 4. Generáltassuk az adatbázismodellt az alábbi paranccsal. Paraméterei: kapcsolódási adatok (Connection), adatbázis driver neve (Provider), a projekten belül a generálandó fájlok könyvtára (OutputDir), a generálandó adatbáziskontextus neve (Context). 
-[Dokumentáció itt](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/powershell#scaffold-dbcontext). A connection string-ben ne felejtsük el átírni az értékeket, pl. a neptun kódot kitölteni.
-A connection string szerkezete SQL Server esetén: kulcs=érték párok pontosvesszővel elválasztva. Nekünk most az alábbi adatok kellenek:
+[Dokumentáció itt](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/powershell#scaffold-dbcontext). A connection stringben ne felejtsük el átírni az értékeket, pl. a Neptun-kódot kitölteni.
+A connection string szerkezete SQL Server esetén: `kulcs=érték`-párok pontosvesszővel elválasztva. Nekünk most az alábbi adatok kellenek:
   - Server - a szerver neve
   - Database - adatbázis neve a szerveren belül (ez ennél a gyakorlatnál a neptun kód lesz)
   - Trusted_Connection=True - ez a Windows authentikációt takarja
@@ -71,42 +71,42 @@ Scaffold-DbContext -Connection "Server=(localdb)\mssqllocaldb;Database=<neptun>;
 ```
 
 A generált kódban figyeljük meg az alábbiakat:
-  - az egyes táblabeli soroknak (rekordoknak) megfelelő C# osztályokat (pl. Termek.cs), azon belül az oszlopoknak megfelelő egyszerű property-ket és a kapcsolódó tábláknak megfelelő más osztályok típusával rendelkező navigációs property-ket (pl. `Termek.Afa`). Ezek alkotják az objektummodellt.
+  - az egyes táblabeli soroknak (rekordoknak) megfelelő C#-osztályokat (pl. Termek.cs), azon belül az oszlopoknak megfelelő egyszerű property-ket és a kapcsolódó tábláknak megfelelő más osztályok típusával rendelkező navigációs property-ket (pl. `Termek.Afa`). Ezek alkotják az objektummodellt.
   - a kontextusosztályt (pl. ACMEShop.cs), ami az általunk megadott névvel jött létre és magának az adatbázisnak a leképezése. Tartalmazza:
-    - a tábláknak megfelelő `DbSet<RekordTipus>` property-ket, ezek a tábláknak felelenek meg
-    - az adatbázis szintű konfigurációt (`OnConfiguring` függvény), pl. kapcsolódási adatokat, bár azt inkább külön konfig fájlban szoktuk tárolni, nem a kódban (erre van is figyelmeztetés a generált kódban)
-    - a leképezések kódját az `OnModelCreating` függvényben. Minden rekordtípus minden property-jére megadja, hogy melyik tábla melyik oszlopára lépződik. Navigációs property-knél megadja a kapcsolat egyes résztvevőinek számosságát (1-N-es, N-N-es), valamint ha van, akkor az idegen kulcs kényszert is.
+    - a tábláknak megfelelő `DbSet<RekordTipus>` propertyket, ezek a tábláknak felelenek meg
+    - az adatbázisszintű konfigurációt (`OnConfiguring` függvény), pl. kapcsolódási adatokat, bár azt inkább külön konfig fájlban szoktuk tárolni, nem a kódban (erre van is figyelmeztetés a generált kódban)
+    - a leképezések kódját az `OnModelCreating` függvényben. Minden rekordtípus minden property-jére megadja, hogy melyik tábla melyik oszlopára lépződik. Navigációs property-knél megadja a kapcsolat egyes résztvevőinek számosságát (1-N-es, N-N-es), valamint ha van, akkor az idegenkulcs-kényszert is.
 
-Mindezzel minden összetevőt létrehoztunk az EF alapinfrastruktúrához.
+Mindezzel minden összetevőt létrehoztunk az EF-alapinfrastruktúrához.
 
-## Feladat 2: Hello EF!
+## Feladat 2: Hello, EF!
 
-Írjuk meg az első EF Core lekérdezésünket. Az SQL mérés alapján itt is kérdezzük le az összes vevőt, majd írjuk ki azonosítójukat, nevüket és felhasználói nevüket is.
+Írjuk meg az első EF Core-lekérdezésünket. Az SQL-mérés alapján itt is kérdezzük le az összes vevőt, majd írjuk ki azonosítójukat, nevüket és felhasználói nevüket is.
 
 A Program.cs-be:
 
 ```csharp
-using (ACMEShop ctx = new ACMEShop()) // kontext létrehozása. Using blokk, mert használat után illik az adatbáziskapcsolatot lezárni.
+using (var ctx = new ACMEShop()) // Context létrehozása. Using blokk, mert használat után illik az adatbáziskapcsolatot lezárni.
 {
-    foreach (Vevo vevo in ctx.Vevo) //a ctx.Vevo a lekérdezésünk, a Vevo táblát reprezentálja
+    foreach (var vevo in ctx.Vevo) // A ctx.Vevo a lekérdezésünk, ami a Vevo táblát reprezentálja.
     {
         Console.WriteLine($"{vevo.Nev} ({vevo.Id}, {vevo.Login})");
     }
 }
 ```
 
-Próbáljuk ki, örvendezzünk, hogy milyen egyszerű és elegáns a kód. Semmilyen SQL stringet / SQL kódot nem kellett írnunk.
+Próbáljuk ki, és örvendezzünk, hogy milyen egyszerű és elegáns a kód. Semmilyen SQL stringet / SQL-kódot nem kellett írnunk.
 
 ## Feladat 3: Nyomkövetés (trace)
 
-Minden olyan ORM használatakor, ahol az ORM állítja elő az SQL-t, elementárisan fontos, hogy lássuk, milyen SQL fut le az adatbázisszerveren. Nyomkövetni lehet az adatbázis oldalán (adatbázis eszközzel), illetve a programunk oldalán (nyomkövető komponenssel) is. Előbbire példa SQL Server esetén az SQL Server Profiler [Trace eszköze](https://docs.microsoft.com/en-us/sql/tools/sql-server-profiler/create-a-trace-sql-server-profiler). Mi most az utóbbi irányt követjük. A kontext `OnConfiguring` függvényébe:
+Minden olyan ORM használatakor, ahol az ORM állítja elő az SQL-t, elementárisan fontos, hogy lássuk, milyen SQL fut le az adatbázisszerveren. Nyomkövetni lehet az adatbázis oldalán (adatbáziseszközzel), illetve a programunk oldalán (nyomkövető komponenssel) is. Előbbire példa SQL Server esetén az SQL Server Profiler [Trace eszköze](https://docs.microsoft.com/en-us/sql/tools/sql-server-profiler/create-a-trace-sql-server-profiler). Mi most az utóbbi irányt követjük. A context `OnConfiguring` függvényébe:
 
 ```csharp
 optionsBuilder.UseSqlServer("connection string") //ez a rész maradjon változatlan
 	.LogTo(message => System.Diagnostics.Debug.WriteLine(message),LogLevel.Information); //ez a rész ékelődjön be a ; elé
 ```
 
-A debug kimenet az Output ablakra van kötve - viszont csak akkor, ha a Visual Studio debugger csatlakoztatva van. Ezért fontos, hogy ha látni akarjuk az EF naplókat, akkor **Debug módban (zöld nyíl, F5 billentyű) futtassuk az alkalmazást**.
+A debug kimenet az Output ablakra van kötve - viszont csak akkor, ha a Visual Studio debugger csatlakoztatva van. Ezért fontos, hogy ha látni akarjuk az EF naplókat, akkor **Debug módban (zöld nyíl, `F5` billentyű) futtassuk az alkalmazást**.
 
 Próbáljuk ki, az Output ablak alján meg kell jelennie egy hasonló SQL-nek:
 
@@ -120,7 +120,7 @@ Próbáljuk ki, az Output ablak alján meg kell jelennie egy hasonló SQL-nek:
 
 Ha hibakeresés miatt részletesebb naplóra van szükség, akkor a `LogLevel` típusú paramétert (ideiglenesen) állítsuk `Loglevel.Debug`-ra.
 
-## Feladat 4: CRUD műveletek (közös)
+## Feladat 4: CRUD-műveletek (közös)
 
 Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részfeladat kódja, kommentezzük ki őket. Minden részfeladatnál ellenőrizzük a kiírt eredményt az adatbázisadatok alapján is (pl. Management Studio-ban) és figyeljük meg a generált SQL-t is az Output ablak alján.
 
@@ -182,12 +182,12 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
    ```
    </details>
 
-1. Rögzítsünk be egy új vevőt! Írjuk ki az újonnan létrejött rekord kulcsát!
+1. Rögzítsünk egy új vevőt! Írjuk ki az újonnan létrejött rekord kulcsát!
 
    <details><summary markdown="span">Megoldás</summary>
 
    ```csharp
-   Vevo ujvevo = new Vevo 
+   var ujvevo = new Vevo 
    { 
       Nev = "Teszt Elek",
       Login = "t.elek",
@@ -205,7 +205,7 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
    A megoldás után ezt a részt kommentezzük ki, ne szúrjunk be minden kipróbálásnál új sort.
    </details>
 
-1. A kategóriák között hibásan szerepel az _Fajáték_ kategória név. Javítsuk át a kategória nevét *Fakockák*ra!
+1. A kategóriák között hibásan szerepel a _Fajáték_ kategórianév. Javítsuk át a kategória nevét *Fakockák*ra!
 
    <details><summary markdown="span">Megoldás</summary>
 
