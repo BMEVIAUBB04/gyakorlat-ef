@@ -297,8 +297,8 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
    </details>
 5. Mely számlá(k)nál nem egyezik meg a kiállítás és teljesítés dátuma? Írjuk ki ezen számla/számlák azonosítóját!
 6. Írjuk ki a 2008. februári rendelések azonosítóját és ezen rendelések dátumát!
-7. Írjuk ki azon rendelések azonosítóját, dátumát és határidejét, amelyeknél a határidő 5 napnál szűkebb a rendelés dátumához képest! (**Nehéz!** :scream:, TIPP: `EF.Functions.DateDiffDay(<dátum>,<határidő>)` megadja a `dátum` és `határidő` között eltelt napok számát)
-8. Hány vevőnek van gmail-es e-mail címe?
+7. Írjuk ki azon rendelés(ek) azonosítóját, dátumát és határidejét, amely(ek)nél a határidő 5 napnál szűkebb a rendelés dátumához képest! (**Nehéz!** :scream:, TIPP: `EF.Functions.DateDiffDay(<dátum>,<határidő>)` megadja a `dátum` és `határidő` között eltelt napok számát)
+8. Hány vevőnek van gmailes e-mail címe?
 9. Melyik vevőknek van egynél több telephelye? Írjuk ki ezen vevők nevét és telephelyeik számát!
 10. Mely vevő(k) adták le a legtöbb tételből álló rendelést? (Több ilyen is lehet!) Írjuk ki ezen vevők nevét! (**Nehéz!** :scream:)
     <details><summary markdown="span">Tipp</summary>
