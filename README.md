@@ -282,7 +282,7 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
 
 ## Feladat 5: Lekérdezések (önálló)
 
-1. Mely termékek ÁFA kulcsa 15%-os? Írjuk ki ezen termékek nevét!
+1. Mely termék(ek) áfakulcsa 15%-os? Írjuk ki ezen termék(ek) nevét!
 1. Melyik város(ok)ba kérték a legtöbb rendelést? (**Nehéz!** :scream:)
    <details><summary markdown="span">Tipp</summary>
 	
@@ -295,7 +295,7 @@ Minden részfeladatot a `using` blokkon belül írjunk. Ha zavar a többi részf
    Így használhatjuk a `SelectMany` LINQ operátort egy `v` vevő összes rendelésének összeszedésére: `v.Telephely.SelectMany(t => t.Megrendeles)`. A `SelectMany`-t akkor használjuk, ha egy kollekció minden elemhez egy kollekciót rendelünk, de az eredményt nem listák listájaként szeretnénk megkapni, hanem csak sima kilapított listaként
 	
    </details>
-5. Mely számláknál nem egyezik meg a kiállítás és teljesítés dátuma? Írjuk ki ezen számlák azonosítóját!
+5. Mely számlá(k)nál nem egyezik meg a kiállítás és teljesítés dátuma? Írjuk ki ezen számla/számlák azonosítóját!
 6. Írjuk ki a 2008. februári rendelések azonosítóját és ezen rendelések dátumát!
 7. Írjuk ki azon rendelések azonosítóját, dátumát és határidejét, amelyeknél a határidő 5 napnál szűkebb a rendelés dátumához képest! (**Nehéz!** :scream:, TIPP: `EF.Functions.DateDiffDay(<dátum>,<határidő>)` megadja a `dátum` és `határidő` között eltelt napok számát)
 8. Hány vevőnek van gmail-es e-mail címe?
