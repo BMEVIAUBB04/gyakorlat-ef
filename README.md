@@ -10,21 +10,19 @@ A labor elvégzéséhez szükséges eszközök:
 
 - Microsoft SQL Server (LocalDB vagy Express edition)
 - SQL Server Management Studio
-- Visual Studio 2022 .NET 6 SDK-val telepítve
+- Visual Studio 2022 .NET 8 SDK-val telepítve
 - Adatbázis létrehozó script: [mssql.sql](https://raw.githubusercontent.com/BMEVIAUBB04/gyakorlat-mssql/master/mssql.sql)
 
 Amit érdemes átnézned:
 
 - EF Core előadás anyaga
 - SQL nyelv
-- Microsoft SQL Server használata [segédlet](https://BMEVIAUBB04.github.io/gyakorlat-mssql/mssql-hasznalat.html) és [videó](https://web.microsoftstream.com/video/e3a83d16-b5c4-4fe9-b027-703347951621)
+- Microsoft SQL Server használata [segédlet](https://BMEVIAUBB04.github.io/gyakorlat-mssql/mssql-hasznalat.html)
 - A használt adatbázis [sémája](https://BMEVIAUBB04.github.io/gyakorlat-mssql/sema.html)
 
 Felkészülés ellenőrzése:
 
 - A gyakorlatra való felkészüléshez használható [ezen kérdőív](https://forms.office.com/Pages/ResponsePage.aspx?id=q0g1anB1cUKRqFjaAGlwKfQJKflZc3NJoMvFrE-iHZ9UNkdMMk82UjFTSlI4TjQ2TElFUlBJVzRCQy4u).
-- A gyakorlaton beugróként ugyanezen kérdőívet fogjuk használni, legalább 50% elérése szükséges.
-  - Gyakorlatvezetői instrukció: a hallgató nyissa meg a kérdőívet és töltse ki. A válaszok megadása után az utolsó oldalon a "View results" gombra kattintva megtekinthető az eredmény és az elért pontszám. A hallgató ezen az oldalon álljon meg és mutassa meg eredményét a gyakorlatvezetőnek.
 
 ## Gyakorlat menete
 
@@ -45,13 +43,13 @@ Az EF, mint ORM-eszköz használatához az alábbi összetevőkre van szükség:
 - adatbáziskapcsolódási adatok, _connection string_ formátumban
 
 Az objektummodellt és a leképezést generáltatni fogjuk az adatbázis alapján - ez az ún. Reverse Engineering modellezési módszer.
-1. Hozzunk létre Visual Studióban egy .NET 6 alapú C# nyelvű konzolalkalmazást. Ehhez válasszuk ki a C# nyelvű konzolalkalmazás sablonok közül a simát (ne a _.NET Framework_ jelölésűt). Futtatókörnyezetként válasszuk a .NET 6-ot. Próbáljuk ki, hogy működik-e, kiíródik-e a "Hello, World!". .NET 6-ban nem kell `Main` függvényt írni, a belépési pontnak szánt kódfájlban (jelenleg a Program.cs-ben) írhatunk egyből utasításokat, nem kell se függvényt, se osztályt létrehoznunk.
+1. Hozzunk létre Visual Studióban egy .NET 8 alapú C# nyelvű konzolalkalmazást. Ehhez válasszuk ki a C# nyelvű konzolalkalmazás sablonok közül a simát (ne a _.NET Framework_ jelölésűt). Futtatókörnyezetként válasszuk a .NET 8-at. Próbáljuk ki, hogy működik-e, kiíródik-e a "Hello, World!". .NET 8-ban nem kell `Main` függvényt írni, a belépési pontnak szánt kódfájlban (jelenleg a Program.cs-ben) írhatunk egyből utasításokat, nem kell se függvényt, se osztályt létrehoznunk.
 2. Nyissuk meg a Package Manager Console-t (PMC) a _Tools :arrow_right: NuGet Package Manager :arrow_right: Package Manager Console_ menüponttal
 3. Telepítsük fel az EF-kódgenerátor eszközt projektfüggőségként, illetve az SQL Server adatbázisdrivert. A generátoreszköznek már kapcsolódnia kell az adatbázishoz, amihez szüksége van a driverre. PMC-ben hajtsuk végre:
 
 ```powershell
-Install-Package Microsoft.EntityFrameworkCore.Tools -Version 6.0.28
-Install-Package Microsoft.EntityFrameworkCore.SqlServer -Version 6.0.28
+Install-Package Microsoft.EntityFrameworkCore.Tools -Version 8.0.13 
+Install-Package Microsoft.EntityFrameworkCore.SqlServer -Version 8.0.13
 ```
 Ezek a csomagok függőségként magát az Entity Framework Core-t is telepítik.
 
@@ -99,7 +97,7 @@ Próbáljuk ki, és örvendezzünk, hogy milyen egyszerű és elegáns a kód. S
 
 ## Feladat 3: Nyomkövetés (trace)
 
-Minden olyan ORM használatakor, ahol az ORM állítja elő az SQL-t, elementárisan fontos, hogy lássuk, milyen SQL fut le az adatbázisszerveren. Nyomkövetni lehet az adatbázis oldalán (adatbáziseszközzel), illetve a programunk oldalán (nyomkövető komponenssel) is. Előbbire példa SQL Server esetén az SQL Server Profiler [Trace eszköze](https://docs.microsoft.com/en-us/sql/tools/sql-server-profiler/create-a-trace-sql-server-profiler). Mi most az utóbbi irányt követjük. A context `OnConfiguring` függvényébe:
+Minden olyan ORM használatakor, ahol az ORM állítja elő az SQL-t, rendkívül fontos, hogy lássuk, milyen SQL fut le az adatbázisszerveren. Nyomkövetni lehet az adatbázis oldalán (adatbáziseszközzel), illetve a programunk oldalán (nyomkövető komponenssel) is. Előbbire példa SQL Server esetén az SQL Server Profiler [Trace eszköze](https://docs.microsoft.com/en-us/sql/tools/sql-server-profiler/create-a-trace-sql-server-profiler). Mi most az utóbbi irányt követjük. A context `OnConfiguring` függvényébe:
 
 ```csharp
 optionsBuilder.UseSqlServer("connection string") //ez a rész maradjon változatlan
